@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="HomeTheme" parent="AppTheme" >
+        <item name="colorPrimary">@color/colorPrimaryHome</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkHome</item>
+        <item name="colorAccent">@android:color/black</item>
+    </style>
+
 </resources>
