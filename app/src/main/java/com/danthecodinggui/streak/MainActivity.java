@@ -12,6 +12,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private List<StreakObject> listViewItems;
+
+    private StreakRecyclerViewAdapter rcAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<StreakObject> streaks = getListItemData();
 
-        StreakRecyclerViewAdapter rcAdapter = new StreakRecyclerViewAdapter(streaks);
+        rcAdapter = new StreakRecyclerViewAdapter(streaks);
         streakRecycler.setAdapter(rcAdapter);
     }
 
@@ -43,9 +47,17 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.home_action_bar_overflow) {
-            return true;
+        switch(id) {
+            case R.id.home_action_bar_add:
+                listViewItems.add(new StreakObject("New Streak"));
+                rcAdapter.notifyItemInserted(listViewItems.size() - 1);
+                break;
+            case R.id.home_action_bar_remove:
+                listViewItems.remove(listViewItems.size() - 1);
+                rcAdapter.notifyItemRemoved(listViewItems.size());
+                break;
+            case R.id.home_action_bar_overflow:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -53,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**Should check for saved streaks and add, if not available then return empty list*/
     private List<StreakObject> getListItemData(){
-        List<StreakObject> listViewItems = new ArrayList<StreakObject>();
+        listViewItems = new ArrayList<StreakObject>();
 
         return listViewItems;
     }

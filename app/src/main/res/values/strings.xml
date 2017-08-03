@@ -2,4 +2,5 @@
     <string name="app_name">Streak</string>
     <string name="home_overflow">Settings</string>
     <string name="home_add">Add Streak</string>
+    <string name="home_remove">Remove Streak</string>
 </resources>
