@@ -17,15 +17,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView streakContainer = (RecyclerView)findViewById(R.id.home_container);
+        RecyclerView streakRecycler = (RecyclerView)findViewById(R.id.home_container);
 
         StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
-        streakContainer.setLayoutManager(streakLayoutManager);
+        streakRecycler.setLayoutManager(streakLayoutManager);
 
         List<StreakObject> streaks = getListItemData();
 
-        StreakRecyclerViewAdapter rcAdapter = new StreakRecyclerViewAdapter(MainActivity.this, streaks);
-        streakContainer.setAdapter(rcAdapter);
+        StreakRecyclerViewAdapter rcAdapter = new StreakRecyclerViewAdapter(streaks);
+        streakRecycler.setAdapter(rcAdapter);
     }
 
 
@@ -44,26 +44,16 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.home_action_bar_settings) {
+        if (id == R.id.home_action_bar_overflow) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    /**Should check for saved streaks and add, if not available then return empty list*/
     private List<StreakObject> getListItemData(){
         List<StreakObject> listViewItems = new ArrayList<StreakObject>();
-        listViewItems.add(new StreakObject("Alkane"));
-        listViewItems.add(new StreakObject("Ethane"));
-        listViewItems.add(new StreakObject("Alkyne is the best thing in the world to me, its really really really great"));
-        listViewItems.add(new StreakObject("Benzene"));
-        listViewItems.add(new StreakObject("Amide"));
-        listViewItems.add(new StreakObject("Amino Acid"));
-        listViewItems.add(new StreakObject("Phenol"));
-        listViewItems.add(new StreakObject("Carbonxylic sounds really toxic, are you really sure we can display that"));
-        listViewItems.add(new StreakObject("Nitril"));
-        listViewItems.add(new StreakObject("Ether"));
-        listViewItems.add(new StreakObject("Ester"));;
 
         return listViewItems;
     }
