@@ -1,17 +1,19 @@
 package com.danthecodinggui.streak;
 
 /**
- * Streak Object for holding streak information such as streak text and time kept
+ * Streak Object for holding information such as streak text, time kept etc.
  */
-
-public class StreakObject {
+class StreakObject {
     private String streakText;
 
-    public StreakObject(String streakText) {
+    /**
+     * @param streakText The streak description
+     */
+    StreakObject(String streakText) {
         this.streakText = streakText;
     }
 
-    public String getStreakText() {
+    String getStreakText() {
         return streakText;
     }
 
