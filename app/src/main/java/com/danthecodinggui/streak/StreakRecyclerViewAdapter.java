@@ -60,7 +60,7 @@ class StreakRecyclerViewAdapter extends
     /**
      * Holds the streak views & what RecyclerView uses rather than individual views themselves
      */
-    class StreakViewHolder extends RecyclerView.ViewHolder {
+    class StreakViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView streakText;
 
@@ -70,6 +70,13 @@ class StreakRecyclerViewAdapter extends
         StreakViewHolder(View view) {
             super(view);
             streakText = (TextView)itemView.findViewById(R.id.streak_text);
+        }
+
+        @Override
+        public void onClick(View view) {
+            //FOR EDITING STREAK
+            //Intent newStreak = new Intent(, EditStreak.class);
+            //startActivity(newStreak);
         }
     }
 }

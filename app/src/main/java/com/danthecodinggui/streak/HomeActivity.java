@@ -1,14 +1,18 @@
 package com.danthecodinggui.streak;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.attr.data;
 
 
 /**
@@ -17,7 +21,11 @@ import java.util.List;
  */
 public class HomeActivity extends AppCompatActivity {
 
+    public static final int ADD_STREAK = 1;
+
     private List<StreakObject> listViewItems;
+
+    private RecyclerView streakRecycler;
 
     private StreakRecyclerViewAdapter rcAdapter;
 
@@ -31,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView streakRecycler = (RecyclerView)findViewById(R.id.home_container);
+        streakRecycler = (RecyclerView)findViewById(R.id.home_container);
 
         StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
         streakRecycler.setLayoutManager(streakLayoutManager);
@@ -64,8 +72,8 @@ public class HomeActivity extends AppCompatActivity {
 
         switch(id) {
             case R.id.home_action_bar_add:
-                listViewItems.add(new StreakObject("New Streak"));
-                rcAdapter.notifyItemInserted(listViewItems.size() - 1);
+                Intent newStreak = new Intent(this, EditStreak.class);
+                startActivityForResult(newStreak, ADD_STREAK);
                 return true;
             case R.id.home_action_bar_remove:
                 listViewItems.remove(listViewItems.size() - 1);
@@ -79,12 +87,23 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks for existing streaks saved in file system, if they exist then load into list
+     * Checks for existing streaks saved in file system, if they exist then load into list. Called
+     * whenever home activity comes to foreground
      * @return List containing initial streaks
      */
     private List<StreakObject> getListItemData(){
         listViewItems = new ArrayList<>();
         //CHECK FILESYSTEM FOR EXISTING STREAKS WHEN CAN SAVE
         return listViewItems;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case ADD_STREAK:
+                listViewItems.add(0, new StreakObject(data.getStringExtra("newStreak")));
+                rcAdapter.notifyItemInserted(0);
+                break;
+        }
     }
 }

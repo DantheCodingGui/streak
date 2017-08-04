@@ -15,11 +15,11 @@
         <item name="android:colorBackground">@color/background_material_light_home</item>
     </style>
 
-    <style name="VerticalCardContainer">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:layout_weight">0.5</item>
+    <style name="EditStreakTheme" parent="AppTheme" >
+        <item name="colorPrimary">@color/colorPrimaryHome</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkHome</item>
+        <item name="colorAccent">@android:color/black</item>
+        <item name="android:colorBackground">@android:color/white</item>
     </style>
 
 </resources>
