@@ -1,24 +1,17 @@
 package com.danthecodinggui.streak;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.danthecodinggui.streak.Database.StreakContract;
 import com.danthecodinggui.streak.Database.StreakDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.data;
-
 
 /**
  * The home screen containing all current streaks in card form, which can be displayed in a number
@@ -29,8 +22,6 @@ public class HomeActivity extends AppCompatActivity {
     public static final int ADD_STREAK = 1;
 
     private List<StreakObject> listViewItems;
-
-    private RecyclerView streakRecycler;
 
     private StreakRecyclerViewAdapter rcAdapter;
 
@@ -44,7 +35,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        streakRecycler = (RecyclerView)findViewById(R.id.home_container);
+        RecyclerView streakRecycler = (RecyclerView)findViewById(R.id.home_container);
 
         StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
         streakRecycler.setLayoutManager(streakLayoutManager);
@@ -101,33 +92,7 @@ public class HomeActivity extends AppCompatActivity {
 
         StreakDbHelper sDbHelper = new StreakDbHelper(this);
 
-        SQLiteDatabase db = sDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                StreakContract.StreakTable._ID,
-                StreakContract.StreakTable.STREAK_DESCRIPTION,
-                StreakContract.StreakTable.STREAK_DURATION
-        };
-
-
-
-        Cursor cursor = db.query(
-            StreakContract.StreakTable.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        while(cursor.moveToNext()) {
-            String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));
-            listViewItems.add(new StreakObject(streakText));
-        }
-        cursor.close();
-        //for loop based on length of db, assign db data to new streakobject objects
+        sDbHelper.GetAllStreaks(listViewItems);
 
         return listViewItems;
     }

@@ -1,8 +1,14 @@
 package com.danthecodinggui.streak.Database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.danthecodinggui.streak.StreakObject;
+
+import java.util.List;
 
 /**
  * Created by Dan on 05/08/2017.
@@ -39,5 +45,47 @@ public class StreakDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + StreakContract.StreakTable.TABLE_NAME);
         onCreate(db);
+    }
+
+    public void AddStreak(StreakObject newStreak) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(StreakContract.StreakTable.STREAK_DESCRIPTION, newStreak.getStreakText());
+        values.put(StreakContract.StreakTable.STREAK_DURATION, newStreak.getStreakDuration());
+
+        db.insert(StreakContract.StreakTable.TABLE_NAME, null, values);
+    }
+
+    public void DeleteStreak() {
+
+    }
+
+    public void GetAllStreaks(List<StreakObject> recyclerViewItems) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] projection = {
+                StreakContract.StreakTable._ID,
+                StreakContract.StreakTable.STREAK_DESCRIPTION,
+                StreakContract.StreakTable.STREAK_DURATION
+        };
+
+        Cursor cursor = db.query(
+                StreakContract.StreakTable.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        while(cursor.moveToNext()) {
+            String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));
+            recyclerViewItems.add(new StreakObject(streakText));
+        }
+        cursor.close();
     }
 }
