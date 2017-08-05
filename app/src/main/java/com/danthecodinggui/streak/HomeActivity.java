@@ -1,6 +1,8 @@
 package com.danthecodinggui.streak;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +10,9 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.danthecodinggui.streak.Database.StreakContract;
+import com.danthecodinggui.streak.Database.StreakDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +98,37 @@ public class HomeActivity extends AppCompatActivity {
      */
     private List<StreakObject> getListItemData(){
         listViewItems = new ArrayList<>();
-        //CHECK FILESYSTEM FOR EXISTING STREAKS WHEN CAN SAVE
+
+        StreakDbHelper sDbHelper = new StreakDbHelper(this);
+
+        SQLiteDatabase db = sDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                StreakContract.StreakTable._ID,
+                StreakContract.StreakTable.STREAK_DESCRIPTION,
+                StreakContract.StreakTable.STREAK_DURATION
+        };
+
+
+
+        Cursor cursor = db.query(
+            StreakContract.StreakTable.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        while(cursor.moveToNext()) {
+            String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));
+            listViewItems.add(new StreakObject(streakText));
+        }
+        cursor.close();
+        //for loop based on length of db, assign db data to new streakobject objects
+
         return listViewItems;
     }
 

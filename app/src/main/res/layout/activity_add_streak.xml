@@ -13,7 +13,9 @@
         android:ems="10"
         android:inputType="textMultiLine"
         android:gravity="top"
-        android:layout_weight="0.1"/>
+        android:layout_weight="0.1"
+        android:layout_margin="20dp"
+        android:background="@android:color/transparent"/>
 
     <Button
         android:id="@+id/button"
