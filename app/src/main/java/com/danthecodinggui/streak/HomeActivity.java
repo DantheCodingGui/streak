@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -42,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
 
         List<StreakObject> streaks = getListItemData();
 
-        rcAdapter = new StreakRecyclerViewAdapter(streaks);
+        rcAdapter = new StreakRecyclerViewAdapter(streaks, this);
         streakRecycler.setAdapter(rcAdapter);
     }
 
@@ -69,11 +70,17 @@ public class HomeActivity extends AppCompatActivity {
         switch(id) {
             case R.id.home_action_bar_add:
                 Intent newStreak = new Intent(this, EditStreak.class);
+                newStreak.putExtra("listSize", listViewItems.size());
+                newStreak.putExtra("function", EditStreak.ADD_STREAK);
                 startActivityForResult(newStreak, ADD_STREAK);
                 return true;
             case R.id.home_action_bar_remove:
-                listViewItems.remove(listViewItems.size() - 1);
-                rcAdapter.notifyItemRemoved(listViewItems.size());
+                rcAdapter.notifyItemRemoved(listViewItems.size() - 1);
+                StreakObject deletedStreak = listViewItems.remove(listViewItems.size() - 1);
+
+                StreakDbHelper sDbHelper = new StreakDbHelper(this);
+                sDbHelper.DeleteStreak(deletedStreak);
+
                 return true;
             case R.id.home_action_bar_overflow:
                 return true;
@@ -91,8 +98,8 @@ public class HomeActivity extends AppCompatActivity {
         listViewItems = new ArrayList<>();
 
         StreakDbHelper sDbHelper = new StreakDbHelper(this);
-
         sDbHelper.GetAllStreaks(listViewItems);
+        Log.d("boogie", "attempt made to get list data");
 
         return listViewItems;
     }
@@ -101,8 +108,11 @@ public class HomeActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
             case ADD_STREAK:
-                listViewItems.add(0, new StreakObject(data.getStringExtra("newStreak")));
-                rcAdapter.notifyItemInserted(0);
+                String streakText = data.getStringExtra("newStreak");
+                int streakDuration = data.getIntExtra("newStreakDuration", 0);
+                //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
+                listViewItems.add(new StreakObject(streakText, streakDuration, listViewItems.size()));
+                rcAdapter.notifyItemInserted(listViewItems.size() - 1);
                 break;
         }
     }

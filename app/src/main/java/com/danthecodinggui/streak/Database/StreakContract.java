@@ -16,6 +16,7 @@ final class StreakContract {
 
         static final String STREAK_DESCRIPTION = "description";
         static final String STREAK_DURATION = "duration";
-
+        static final String STREAK_IS_PRIORITY = "priority";
+        static final String STREAK_VIEW_INDEX = "view_index";
     }
 }

@@ -1,12 +1,19 @@
 package com.danthecodinggui.streak;
 
+import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.danthecodinggui.streak.Database.StreakDbHelper;
+
 import java.util.List;
+
 
 /**
  * Adapter class linking streak data to user interface
@@ -16,11 +23,14 @@ class StreakRecyclerViewAdapter extends
 
     private List<StreakObject> streakList;
 
+    private HomeActivity homeOb;
+
     /**
      * @param streakList Initialise data if some already exists
      */
-    StreakRecyclerViewAdapter(List<StreakObject> streakList) {
+    StreakRecyclerViewAdapter(List<StreakObject> streakList, HomeActivity homeOb) {
         this.streakList = streakList;
+        this.homeOb = homeOb;
     }
 
     /**
@@ -60,7 +70,8 @@ class StreakRecyclerViewAdapter extends
     /**
      * Holds the streak views & what RecyclerView uses rather than individual views themselves
      */
-    class StreakViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class StreakViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, View.OnLongClickListener {
 
         TextView streakText;
 
@@ -70,13 +81,32 @@ class StreakRecyclerViewAdapter extends
         StreakViewHolder(View view) {
             super(view);
             streakText = (TextView)itemView.findViewById(R.id.streak_text);
+            view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             //FOR EDITING STREAK
-            //Intent newStreak = new Intent(, EditStreak.class);
-            //startActivity(newStreak);
+
+
+            Intent editStreak = new Intent(homeOb, EditStreak.class);
+            editStreak.putExtra("streakText", streakText.getText());
+            editStreak.putExtra("function", EditStreak.EDIT_STREAK);
+
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(homeOb, view, homeOb.getString(R.string.transition_edit_streak));
+
+            ActivityCompat.startActivity(homeOb, editStreak, options.toBundle());
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+
+            //StreakDbHelper sDbHelper = new StreakDbHelper();
+
+
+            return true;
         }
     }
 }
