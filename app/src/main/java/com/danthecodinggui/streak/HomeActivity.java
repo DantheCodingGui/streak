@@ -14,13 +14,19 @@ import com.danthecodinggui.streak.Database.StreakDbHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.media.CamcorderProfile.get;
+
 /**
  * The home screen containing all current streaks in card form, which can be displayed in a number
  * of ways
  */
 public class HomeActivity extends AppCompatActivity {
 
-    public static final int ADD_STREAK = 1;
+    public static final int ADD_STREAK = 0;
+    public static final int EDIT_STREAK = 1;
+
+    public static final int UPDATE_TEXT = 0;
+    public static final int UPDATE_IS_PRIORITY = 1;
 
     private List<StreakObject> listViewItems;
 
@@ -106,13 +112,32 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String streakText;
         switch(requestCode) {
             case ADD_STREAK:
-                String streakText = data.getStringExtra("newStreak");
+                streakText = data.getStringExtra("newStreak");
                 int streakDuration = data.getIntExtra("newStreakDuration", 0);
                 //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
+
                 listViewItems.add(new StreakObject(streakText, streakDuration, listViewItems.size()));
                 rcAdapter.notifyItemInserted(listViewItems.size() - 1);
+                break;
+
+            case EDIT_STREAK:
+                boolean streakHasChanged = data.getBooleanExtra("hasStreakChanged", false);
+                if (!streakHasChanged)
+                    break;
+                Log.d("boogie", "value received was true");
+                streakText = data.getStringExtra("editedStreak");
+                int streakPosition = data.getIntExtra("editedStreakPosition", -1);
+                //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
+                Log.d("boogie", "edited position is " + streakPosition);
+
+                listViewItems.get(streakPosition).setStreakText(streakText);
+                rcAdapter.notifyItemChanged(streakPosition);
+                break;
+            default:
+                Log.d("Error", "Invalid return to HomeActivity");
                 break;
         }
     }

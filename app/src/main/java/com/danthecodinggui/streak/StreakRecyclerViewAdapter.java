@@ -81,6 +81,8 @@ class StreakRecyclerViewAdapter extends
         StreakViewHolder(View view) {
             super(view);
             streakText = (TextView)itemView.findViewById(R.id.streak_text);
+
+
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
         }
@@ -92,19 +94,20 @@ class StreakRecyclerViewAdapter extends
 
             Intent editStreak = new Intent(homeOb, EditStreak.class);
             editStreak.putExtra("streakText", streakText.getText());
+            editStreak.putExtra("viewId", getAdapterPosition());
             editStreak.putExtra("function", EditStreak.EDIT_STREAK);
 
             ActivityOptionsCompat options =
                     ActivityOptionsCompat.makeSceneTransitionAnimation(homeOb, view, homeOb.getString(R.string.transition_edit_streak));
 
-            ActivityCompat.startActivity(homeOb, editStreak, options.toBundle());
+            ActivityCompat.startActivityForResult(homeOb, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
         }
 
         @Override
         public boolean onLongClick(View view) {
 
             //StreakDbHelper sDbHelper = new StreakDbHelper();
-
+            Log.d("boogie", "Long click detected");
 
             return true;
         }

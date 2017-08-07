@@ -26,12 +26,16 @@ public class EditStreak extends AppCompatActivity {
     static final int ADD_STREAK = 0;
     static final int EDIT_STREAK = 1;
 
+    private StreakObject oldStreak;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_streak);
+
         Intent intent = getIntent();
         function = intent.getIntExtra("function", ADD_STREAK);
+
         switch(function) {
             case (ADD_STREAK):
                 streakDuration = 1;
@@ -41,6 +45,13 @@ public class EditStreak extends AppCompatActivity {
                 streakText = getIntent().getStringExtra("streakText");
                 EditText text = (EditText)findViewById(editStreak);
                 text.setText(streakText);
+
+                streakViewId = getIntent().getIntExtra("viewId", -1);
+
+                oldStreak = new StreakObject(streakText, streakDuration, streakViewId);
+                break;
+            default:
+                Log.d("Error", "Invalid intent to EditStreak");
                 break;
         }
     }
@@ -49,25 +60,47 @@ public class EditStreak extends AppCompatActivity {
      * Saves streak to file system
      * @param view Button view Pressed
      */
-    public void AddStreak(View view) {
-
-        if (function == EDIT_STREAK) {
-            finish();
-            Log.d("boogie", "has finished");
-            return;
-        }
+    public void SubmitStreak(View view) {
 
         EditText text = (EditText)findViewById(editStreak);
         streakText = text.getText().toString();
-        Log.d("boogie", "before database save");
 
-        SaveToDatabase(new StreakObject(streakText, streakDuration, streakViewId));
+        StreakObject ob = new StreakObject(streakText, streakDuration, streakViewId);
 
         Intent output = new Intent();
-        output.putExtra("newStreak", streakText);
-        output.putExtra("newStreakDuration", streakDuration);
+
+        switch(function) {
+            case (ADD_STREAK):
+                SaveToDatabase(ob);
+
+                output.putExtra("newStreak", streakText);
+                output.putExtra("newStreakDuration", streakDuration);
+
+                setResult(HomeActivity.ADD_STREAK, output);
+                break;
+            case (EDIT_STREAK):
+                if (oldStreak.equals(ob)) {
+                    output.putExtra("hasStreakChanged", false);
+                    setResult(HomeActivity.EDIT_STREAK, output);
+                    Log.d("boogie", "value sent was false");
+                    break;
+                }
+
+                StreakDbHelper sDbHelper = new StreakDbHelper(this);
+                sDbHelper.UpdateStreakValues(new StreakObject(streakText, streakDuration, streakViewId), HomeActivity.UPDATE_TEXT);
+
+                output.putExtra("editedStreak", streakText);
+                output.putExtra("editedStreakPosition", streakViewId);
+                output.putExtra("hasStreakChanged", true);
+
+                setResult(HomeActivity.EDIT_STREAK, output);
+                break;
+            default:
+                Log.d("Error", "Invalid call to SubmitStreak");
+                break;
+        }
+
         //output.putExtra("newStreakIsPriority", streakIsPriority);
-        setResult(HomeActivity.ADD_STREAK, output);
 
         finish();
     }

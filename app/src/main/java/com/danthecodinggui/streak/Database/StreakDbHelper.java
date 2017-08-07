@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.danthecodinggui.streak.HomeActivity;
 import com.danthecodinggui.streak.StreakObject;
 
 import java.util.List;
@@ -28,8 +29,6 @@ public class StreakDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        Log.d("boogie", "attempt to create database...");
-
         final String SQL_CREATE_STREAK_TABLE = "CREATE TABLE " + StreakContract.StreakTable.TABLE_NAME
                 + "(" + StreakContract.StreakTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + StreakContract.StreakTable.STREAK_DESCRIPTION + " TEXT NOT NULL, "
@@ -38,8 +37,6 @@ public class StreakDbHelper extends SQLiteOpenHelper {
                 + StreakContract.StreakTable.STREAK_VIEW_INDEX + " INT NOT NULL);";
 
         db.execSQL(SQL_CREATE_STREAK_TABLE);
-
-        Log.d("boogie", "database created");
     }
 
     /**
@@ -56,11 +53,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     public void AddStreak(StreakObject newStreak) {
 
-        Log.d("boogie", "getting writable database...");
-
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.d("boogie", "got database");
-        Log.d("boogie", "setting column values...");
 
         ContentValues values = new ContentValues();
         values.put(StreakContract.StreakTable.STREAK_DESCRIPTION, newStreak.getStreakText());
@@ -69,8 +62,35 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, newStreak.getStreakViewIndex());
 
         db.insert(StreakContract.StreakTable.TABLE_NAME, null, values);
+    }
 
-        Log.d("boogie", "Streak added to database");
+    public void UpdateStreakValues(StreakObject editedStreak, int whatToUpdate) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        switch(whatToUpdate) {
+            case (HomeActivity.UPDATE_TEXT):
+                values.put(StreakContract.StreakTable.STREAK_DESCRIPTION, editedStreak.getStreakText());
+                break;
+            case (HomeActivity.UPDATE_IS_PRIORITY):
+                values.put(StreakContract.StreakTable.STREAK_IS_PRIORITY, editedStreak.getStreakIsPriority());
+                break;
+            default:
+                Log.d("Error", "Invalid call to UpdateStreak");
+                return;
+        }
+
+        String selection = StreakContract.StreakTable.STREAK_VIEW_INDEX + " = ?";
+        String[] selectionArgs = { Integer.toString(editedStreak.getStreakViewIndex()) };
+
+        db.update(
+                StreakContract.StreakTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
     }
 
     public void DeleteStreak(StreakObject streakToDelete) {
@@ -85,8 +105,6 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     public void GetAllStreaks(List<StreakObject> recyclerViewItems) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        Log.d("boogie", "cursor has not loaded yet");
 
         String[] projection = {
                 StreakContract.StreakTable._ID,
@@ -107,8 +125,6 @@ public class StreakDbHelper extends SQLiteOpenHelper {
                 null,
                 sortOrder
         );
-
-        Log.d("boogie", "cursor has succeeded");
 
         while(cursor.moveToNext()) {
             String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));

@@ -22,10 +22,24 @@ public class StreakObject {
         this.isPriority = false;
     }
 
+    @Override
+    public boolean equals(Object otherObject) {
+        if (!(otherObject instanceof StreakObject)){
+            return false;
+        }
+
+        StreakObject otherStreak = (StreakObject)otherObject;
+
+        return streakText.equals(otherStreak.getStreakText())
+                && streakDuration == otherStreak.getStreakDuration()
+                && isPriority == otherStreak.getStreakIsPriority()
+                && viewIndex == otherStreak.getStreakViewIndex();
+
+    }
+
     public String getStreakText() {
         return streakText;
     }
-
     public void setStreakText(String text) {
         streakText = text;
     }
@@ -33,7 +47,6 @@ public class StreakObject {
     public int getStreakDuration() {
         return streakDuration;
     }
-
     public void incrementStreakDuration() {
         ++streakDuration;
     }
@@ -41,7 +54,6 @@ public class StreakObject {
     public int getStreakViewIndex() {
         return viewIndex;
     }
-
     public void setStreakViewIndex(int newViewIndex) {
         viewIndex = newViewIndex;
     }
@@ -49,7 +61,6 @@ public class StreakObject {
     public boolean getStreakIsPriority() {
         return isPriority;
     }
-
     public void setStreakIsPriority(boolean newPriority) {
         isPriority = newPriority;
     }

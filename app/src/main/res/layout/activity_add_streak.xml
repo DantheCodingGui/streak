@@ -24,7 +24,7 @@
         android:layout_height="match_parent"
         android:text="Done"
         android:layout_weight="0.9"
-        android:onClick="AddStreak"/>
+        android:onClick="SubmitStreak"/>
 
 
 </LinearLayout>
