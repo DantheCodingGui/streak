@@ -1,11 +1,11 @@
 package com.danthecodinggui.streak.Activities.Util;
 
 /**
- * Created by Dan on 07/08/2017.
+ * Defines methods that the ItemTouchHelper callback subclass will redirect to the
+ * RecyclerViewAdapter
  */
 
 public interface ItemTouchHelperAdapter {
     boolean onItemMove(int fromPosition, int toPosition);
-
     void onItemDismiss(int position);
 }

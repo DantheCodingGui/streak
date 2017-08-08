@@ -48,9 +48,9 @@ public class HomeActivity extends AppCompatActivity {
         StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
         streakRecycler.setLayoutManager(streakLayoutManager);
 
-        List<StreakObject> streaks = getListItemData();
+        List<StreakObject> streakData = getListItemData();
 
-        rcAdapter = new StreakRecyclerViewAdapter(streaks, this);
+        rcAdapter = new StreakRecyclerViewAdapter(streakData, this);
         streakRecycler.setAdapter(rcAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(rcAdapter);
@@ -59,7 +59,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Inflate custom app bar
+     * Inflate central app bar
      * @param menu The menu object for the activity
      * @return Boolean defining whether or not app bar menu should be displayed
      */
@@ -101,16 +101,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Checks for existing streaks saved in file system, if they exist then load into list. Called
-     * whenever home activity comes to foreground
-     * @return List containing initial streaks
+     * Checks for existing streaks saved in database, if they exist then load into list.
+     * @return List containing existing streaks
      */
     private List<StreakObject> getListItemData(){
         listViewItems = new ArrayList<>();
 
         StreakDbHelper sDbHelper = new StreakDbHelper(this);
         sDbHelper.GetAllStreaks(listViewItems);
-        Log.d("boogie", "attempt made to get list data");
 
         return listViewItems;
     }
@@ -139,7 +137,6 @@ public class HomeActivity extends AppCompatActivity {
                 streakText = data.getStringExtra("editedStreak");
                 int streakPosition = data.getIntExtra("editedStreakPosition", -1);
                 //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
-                Log.d("boogie", "edited position is " + streakPosition);
 
                 listViewItems.get(streakPosition).setStreakText(streakText);
                 rcAdapter.notifyItemChanged(streakPosition);

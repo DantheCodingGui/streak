@@ -3,7 +3,7 @@ package com.danthecodinggui.streak.Activities.Util;
 import android.support.v7.widget.RecyclerView;
 
 /**
- * Created by Dan on 07/08/2017.
+ * Unused at the moment, will look at later
  */
 
 public interface OnStartDragListener {

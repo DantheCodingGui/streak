@@ -12,7 +12,9 @@ import com.danthecodinggui.streak.R;
 
 import static com.danthecodinggui.streak.R.id.editStreak;
 
-
+/**
+ * Screen shown whenever activity added or existing streak clicked by user
+ */
 public class EditStreakActivity extends AppCompatActivity {
 
     private String streakText;
@@ -58,7 +60,7 @@ public class EditStreakActivity extends AppCompatActivity {
     }
 
     /**
-     * Saves streak to file system
+     * Saves new/edited streak to database
      * @param view Button view Pressed
      */
     public void SubmitStreak(View view) {
@@ -107,8 +109,12 @@ public class EditStreakActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * Calls database helper method to add streak object to the database
+     * @param newStreak streak object to add to the database
+     * @return primary key of new record
+     */
     private long SaveToDatabase(StreakObject newStreak) {
-
         StreakDbHelper sDbHelper = new StreakDbHelper(this);
         return sDbHelper.AddStreak(newStreak);
     }

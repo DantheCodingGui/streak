@@ -13,7 +13,7 @@ import com.danthecodinggui.streak.Activities.StreakObject;
 import java.util.List;
 
 /**
- * Manages database actions
+ * Manages all interaction between the database and the rest of the application
  */
 
 public class StreakDbHelper extends SQLiteOpenHelper {
@@ -48,6 +48,11 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Adds a new streak object to the database
+     * @param newStreak the object to add
+     * @return primary key of the new database entry
+     */
     public long AddStreak(StreakObject newStreak) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -61,6 +66,11 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         return db.insert(StreakContract.StreakTable.TABLE_NAME, null, values);
     }
 
+    /**
+     * Updates the database to changes made to a streak
+     * @param editedStreak The streak to grab the updated values from
+     * @param whatToUpdate Defines what specific values to update from the object
+     */
     public void UpdateStreakValues(StreakObject editedStreak, int whatToUpdate) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -90,6 +100,11 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         );
     }
 
+    /**
+     * Swaps the view index values of two database records
+     * @param firstStreak
+     * @param secondStreak
+     */
     public void SwapListViewIndexes(StreakObject firstStreak, StreakObject secondStreak) {
 
         int temp = firstStreak.getStreakViewIndex();
@@ -125,6 +140,10 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         );
     }
 
+    /**
+     * Deletes a streak entry from the database
+     * @param streakToDelete
+     */
     public void DeleteStreak(StreakObject streakToDelete) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -135,6 +154,10 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Grabs all the existing streaks in the database
+     * @param recyclerViewItems
+     */
     public void GetAllStreaks(List<StreakObject> recyclerViewItems) {
         SQLiteDatabase db = this.getReadableDatabase();
 

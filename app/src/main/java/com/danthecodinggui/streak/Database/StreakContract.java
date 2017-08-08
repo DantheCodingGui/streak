@@ -10,6 +10,9 @@ final class StreakContract {
 
     private StreakContract() {}
 
+    /**
+     * Defines how data is laid out for the streak table
+     */
     static final class StreakTable implements BaseColumns {
 
         static final String TABLE_NAME = "streaks";

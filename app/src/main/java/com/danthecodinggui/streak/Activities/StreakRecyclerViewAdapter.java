@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.danthecodinggui.streak.Activities.Util.ItemTouchHelperAdapter;
@@ -70,7 +69,8 @@ class StreakRecyclerViewAdapter
         holder.streakText.setText(ob.getStreakText());
     }
 
-    /**
+    /** Needed for RecyclerViewAdapter implementation
+     * returns size of data model
      * @return Size of list to be displayed in RecyclerView
      */
     @Override
@@ -78,6 +78,10 @@ class StreakRecyclerViewAdapter
         return streakList.size();
     }
 
+    /**
+     * Deletes streak object when ViewHolder swiped
+     * @param position The position of the streak to delete in the list
+     */
     @Override
     public void onItemDismiss(int position) {
         StreakObject ob = streakList.remove(position);
@@ -87,6 +91,13 @@ class StreakRecyclerViewAdapter
         sDbHelper.DeleteStreak(ob);
     }
 
+    /**
+     * Handles swapping streak views, updating streak object view attributes and updates database
+     * entries
+     * @param fromPosition
+     * @param toPosition
+     * @return Has the movement been handled
+     */
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         int i = fromPosition;
@@ -126,17 +137,17 @@ class StreakRecyclerViewAdapter
 
         TextView streakText;
 
-        /**
-         * @param view The view item that the ViewHolder will contain
-         */
         StreakViewHolder(View view) {
             super(view);
             streakText = (TextView)itemView.findViewById(R.id.streak_text);
 
-
             view.setOnClickListener(this);
         }
 
+        /**
+         * Opens edit streak activiy
+         * @param view
+         */
         @Override
         public void onClick(View view) {
             //FOR EDITING STREAK
@@ -153,6 +164,11 @@ class StreakRecyclerViewAdapter
             ActivityCompat.startActivityForResult(linkedActivity, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
         }
 
+        /**
+         * Switches app bar to other version with options such as delete etc.
+         * @param view
+         * @return Has long click been handled
+         */
         @Override
         public boolean onLongClick(View view) {
 
@@ -162,6 +178,9 @@ class StreakRecyclerViewAdapter
             return true;
         }
 
+        /**
+         * Changes appearance of view when start drag and drop movement
+         */
         @Override
         public void onItemSelected() {
             //CHANGE APPEARANCE OF PICKED UP CARDS HERE
@@ -170,6 +189,9 @@ class StreakRecyclerViewAdapter
             itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.LTGRAY);
         }
 
+        /**
+         * Changes view appearance back to default when drag and drop movement ended
+         */
         @Override
         public void onItemClear() {
             CardView card = (CardView)itemView.findViewById(streak_card_view);
