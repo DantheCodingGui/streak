@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak;
+package com.danthecodinggui.streak.Activities;
 
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
@@ -10,16 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.danthecodinggui.streak.Activities.Util.ItemTouchHelperAdapter;
 import com.danthecodinggui.streak.Database.StreakDbHelper;
+import com.danthecodinggui.streak.R;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 
 /**
  * Adapter class linking streak data to user interface
  */
-class StreakRecyclerViewAdapter extends
-        RecyclerView.Adapter<StreakRecyclerViewAdapter.StreakViewHolder> {
+class StreakRecyclerViewAdapter
+        extends RecyclerView.Adapter<StreakRecyclerViewAdapter.StreakViewHolder>
+        implements ItemTouchHelperAdapter {
 
     private List<StreakObject> streakList;
 
@@ -67,6 +72,46 @@ class StreakRecyclerViewAdapter extends
         return streakList.size();
     }
 
+    @Override
+    public void onItemDismiss(int position) {
+        StreakObject ob = streakList.remove(position);
+        notifyItemRemoved(position);
+
+        StreakDbHelper sDbHelper = new StreakDbHelper(homeOb);
+        sDbHelper.DeleteStreak(ob);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        int i = fromPosition;
+        int temp;
+        StreakDbHelper sDbHelper = new StreakDbHelper(homeOb);
+        if (fromPosition < toPosition) {
+            for (; i < toPosition; ++i) {
+                sDbHelper.SwapListViewIndexes(streakList.get(i), streakList.get(i + 1));
+
+                temp = streakList.get(i).getStreakViewIndex();
+                streakList.get(i).setStreakViewIndex(streakList.get(i + 1).getStreakViewIndex());
+                streakList.get(i + 1).setStreakViewIndex(temp);
+
+                Collections.swap(streakList, i, i + 1);
+            }
+        }
+        else {
+            for (; i > toPosition; --i) {
+                sDbHelper.SwapListViewIndexes(streakList.get(i), streakList.get(i - 1));
+
+                temp = streakList.get(i).getStreakViewIndex();
+                streakList.get(i).setStreakViewIndex(streakList.get(i - 1).getStreakViewIndex());
+                streakList.get(i - 1).setStreakViewIndex(temp);
+
+                Collections.swap(streakList, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
     /**
      * Holds the streak views & what RecyclerView uses rather than individual views themselves
      */
@@ -92,10 +137,10 @@ class StreakRecyclerViewAdapter extends
             //FOR EDITING STREAK
 
 
-            Intent editStreak = new Intent(homeOb, EditStreak.class);
+            Intent editStreak = new Intent(homeOb, EditStreakActivity.class);
             editStreak.putExtra("streakText", streakText.getText());
             editStreak.putExtra("viewId", getAdapterPosition());
-            editStreak.putExtra("function", EditStreak.EDIT_STREAK);
+            editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
 
             ActivityOptionsCompat options =
                     ActivityOptionsCompat.makeSceneTransitionAnimation(homeOb, view, homeOb.getString(R.string.transition_edit_streak));

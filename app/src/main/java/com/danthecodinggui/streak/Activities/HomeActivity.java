@@ -1,20 +1,21 @@
-package com.danthecodinggui.streak;
+package com.danthecodinggui.streak.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.danthecodinggui.streak.Activities.Util.SimpleItemTouchHelperCallback;
 import com.danthecodinggui.streak.Database.StreakDbHelper;
+import com.danthecodinggui.streak.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.media.CamcorderProfile.get;
 
 /**
  * The home screen containing all current streaks in card form, which can be displayed in a number
@@ -51,6 +52,10 @@ public class HomeActivity extends AppCompatActivity {
 
         rcAdapter = new StreakRecyclerViewAdapter(streaks, this);
         streakRecycler.setAdapter(rcAdapter);
+
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(rcAdapter, this, listViewItems);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(streakRecycler);
     }
 
     /**
@@ -75,9 +80,9 @@ public class HomeActivity extends AppCompatActivity {
 
         switch(id) {
             case R.id.home_action_bar_add:
-                Intent newStreak = new Intent(this, EditStreak.class);
+                Intent newStreak = new Intent(this, EditStreakActivity.class);
                 newStreak.putExtra("listSize", listViewItems.size());
-                newStreak.putExtra("function", EditStreak.ADD_STREAK);
+                newStreak.putExtra("function", EditStreakActivity.ADD_STREAK);
                 startActivityForResult(newStreak, ADD_STREAK);
                 return true;
             case R.id.home_action_bar_remove:
@@ -115,11 +120,14 @@ public class HomeActivity extends AppCompatActivity {
         String streakText;
         switch(requestCode) {
             case ADD_STREAK:
+                long streakId = data.getLongExtra("newStreakId", 0);
                 streakText = data.getStringExtra("newStreak");
                 int streakDuration = data.getIntExtra("newStreakDuration", 0);
                 //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
 
-                listViewItems.add(new StreakObject(streakText, streakDuration, listViewItems.size()));
+                StreakObject newStreak = new StreakObject(streakText, streakDuration, listViewItems.size());
+                listViewItems.add(newStreak);
+                newStreak.setStreakId(streakId);
                 rcAdapter.notifyItemInserted(listViewItems.size() - 1);
                 break;
 

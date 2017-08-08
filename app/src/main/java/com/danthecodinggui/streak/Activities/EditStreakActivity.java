@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak;
+package com.danthecodinggui.streak.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.danthecodinggui.streak.Database.StreakDbHelper;
+import com.danthecodinggui.streak.R;
 
 import static com.danthecodinggui.streak.R.id.editStreak;
 
 
-public class EditStreak extends AppCompatActivity {
+public class EditStreakActivity extends AppCompatActivity {
 
     private String streakText;
     private int streakDuration;
@@ -23,8 +24,8 @@ public class EditStreak extends AppCompatActivity {
 
     private int function;
 
-    static final int ADD_STREAK = 0;
-    static final int EDIT_STREAK = 1;
+    public static final int ADD_STREAK = 0;
+    public static final int EDIT_STREAK = 1;
 
     private StreakObject oldStreak;
 
@@ -51,7 +52,7 @@ public class EditStreak extends AppCompatActivity {
                 oldStreak = new StreakObject(streakText, streakDuration, streakViewId);
                 break;
             default:
-                Log.d("Error", "Invalid intent to EditStreak");
+                Log.d("Error", "Invalid intent to EditStreakActivity");
                 break;
         }
     }
@@ -71,8 +72,9 @@ public class EditStreak extends AppCompatActivity {
 
         switch(function) {
             case (ADD_STREAK):
-                SaveToDatabase(ob);
+                long primaryKey = SaveToDatabase(ob);
 
+                output.putExtra("newStreakId", primaryKey);
                 output.putExtra("newStreak", streakText);
                 output.putExtra("newStreakDuration", streakDuration);
 
@@ -105,9 +107,9 @@ public class EditStreak extends AppCompatActivity {
         finish();
     }
 
-    private void SaveToDatabase(StreakObject newStreak) {
+    private long SaveToDatabase(StreakObject newStreak) {
 
         StreakDbHelper sDbHelper = new StreakDbHelper(this);
-        sDbHelper.AddStreak(newStreak);
+        return sDbHelper.AddStreak(newStreak);
     }
 }
