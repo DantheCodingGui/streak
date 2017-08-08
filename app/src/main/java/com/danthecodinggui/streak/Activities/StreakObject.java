@@ -11,7 +11,6 @@ public class StreakObject {
     private int streakDuration;
     private boolean isPriority;
     private int viewIndex;
-    private int previousViewIndex;
 
     /**
      * Data model represented in RecyclerView
@@ -21,7 +20,7 @@ public class StreakObject {
         this.streakText = streakText;
         this.streakDuration = streakDuration;
         this.isPriority = false;
-        this.viewIndex = previousViewIndex = viewIndex;
+        this.viewIndex = viewIndex;
         id = 0;
     }
 
@@ -66,13 +65,6 @@ public class StreakObject {
     }
     public void setStreakViewIndex(int newViewIndex) {
         viewIndex = newViewIndex;
-    }
-
-    public int getPreviousStreakViewIndex() {
-        return previousViewIndex;
-    }
-    public void setPreviousStreakViewIndex(int newViewIndex) {
-        previousViewIndex = newViewIndex;
     }
 
     public boolean getStreakIsPriority() {

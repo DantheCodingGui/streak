@@ -1,22 +1,28 @@
 package com.danthecodinggui.streak.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.danthecodinggui.streak.Activities.Util.ItemTouchHelperAdapter;
+import com.danthecodinggui.streak.Activities.Util.ItemTouchHelperViewHolder;
 import com.danthecodinggui.streak.Database.StreakDbHelper;
 import com.danthecodinggui.streak.R;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+
+import static com.danthecodinggui.streak.R.id.streak_card_view;
 
 
 /**
@@ -28,14 +34,14 @@ class StreakRecyclerViewAdapter
 
     private List<StreakObject> streakList;
 
-    private HomeActivity homeOb;
+    private Activity linkedActivity;
 
     /**
      * @param streakList Initialise data if some already exists
      */
-    StreakRecyclerViewAdapter(List<StreakObject> streakList, HomeActivity homeOb) {
+    StreakRecyclerViewAdapter(List<StreakObject> streakList, Activity linkedActivity) {
         this.streakList = streakList;
-        this.homeOb = homeOb;
+        this.linkedActivity = linkedActivity;
     }
 
     /**
@@ -77,7 +83,7 @@ class StreakRecyclerViewAdapter
         StreakObject ob = streakList.remove(position);
         notifyItemRemoved(position);
 
-        StreakDbHelper sDbHelper = new StreakDbHelper(homeOb);
+        StreakDbHelper sDbHelper = new StreakDbHelper(linkedActivity);
         sDbHelper.DeleteStreak(ob);
     }
 
@@ -85,7 +91,7 @@ class StreakRecyclerViewAdapter
     public boolean onItemMove(int fromPosition, int toPosition) {
         int i = fromPosition;
         int temp;
-        StreakDbHelper sDbHelper = new StreakDbHelper(homeOb);
+        StreakDbHelper sDbHelper = new StreakDbHelper(linkedActivity);
         if (fromPosition < toPosition) {
             for (; i < toPosition; ++i) {
                 sDbHelper.SwapListViewIndexes(streakList.get(i), streakList.get(i + 1));
@@ -116,7 +122,7 @@ class StreakRecyclerViewAdapter
      * Holds the streak views & what RecyclerView uses rather than individual views themselves
      */
     class StreakViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnLongClickListener {
+            implements View.OnClickListener, View.OnLongClickListener, ItemTouchHelperViewHolder {
 
         TextView streakText;
 
@@ -129,23 +135,22 @@ class StreakRecyclerViewAdapter
 
 
             view.setOnClickListener(this);
-            view.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             //FOR EDITING STREAK
 
-
-            Intent editStreak = new Intent(homeOb, EditStreakActivity.class);
+            Intent editStreak = new Intent(linkedActivity, EditStreakActivity.class);
             editStreak.putExtra("streakText", streakText.getText());
+            view.setOnLongClickListener(this);
             editStreak.putExtra("viewId", getAdapterPosition());
             editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
 
             ActivityOptionsCompat options =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(homeOb, view, homeOb.getString(R.string.transition_edit_streak));
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(linkedActivity, view, linkedActivity.getString(R.string.transition_edit_streak));
 
-            ActivityCompat.startActivityForResult(homeOb, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
+            ActivityCompat.startActivityForResult(linkedActivity, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
         }
 
         @Override
@@ -155,6 +160,21 @@ class StreakRecyclerViewAdapter
             Log.d("boogie", "Long click detected");
 
             return true;
+        }
+
+        @Override
+        public void onItemSelected() {
+            //CHANGE APPEARANCE OF PICKED UP CARDS HERE
+            CardView card = (CardView)itemView.findViewById(streak_card_view);
+            card.setCardBackgroundColor(Color.rgb(121, 121, 121));
+            itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.LTGRAY);
+        }
+
+        @Override
+        public void onItemClear() {
+            CardView card = (CardView)itemView.findViewById(streak_card_view);
+            card.setCardBackgroundColor(Color.WHITE);
+            itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.TRANSPARENT);
         }
     }
 }

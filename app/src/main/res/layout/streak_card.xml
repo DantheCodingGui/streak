@@ -7,20 +7,23 @@
     android:layout_height="wrap_content"
     card_view:cardUseCompatPadding="true"
     card_view:cardCornerRadius="5dp"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardElevation="2dp"
     android:clickable="true"
     android:longClickable="true">
 
     <LinearLayout
+        android:id="@+id/card_content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:transitionName="@string/transition_edit_streak">
+        android:transitionName="@string/transition_edit_streak"
+        android:layout_margin="3dp">
 
         <TextView
             android:id="@+id/streak_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             android:gravity="center_horizontal"
             android:padding="10dp"
             android:textColor="@android:color/black"

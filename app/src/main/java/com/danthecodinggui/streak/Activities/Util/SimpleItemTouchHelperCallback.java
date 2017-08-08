@@ -1,13 +1,7 @@
 package com.danthecodinggui.streak.Activities.Util;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-
-import com.danthecodinggui.streak.Activities.StreakObject;
-import com.danthecodinggui.streak.Database.StreakDbHelper;
-
-import java.util.List;
 
 /**
  * Created by Dan on 07/08/2017.
@@ -17,19 +11,9 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final ItemTouchHelperAdapter mAdapter;
 
-    private Context activityContext;
 
-    private List<StreakObject> streakList;
-
-    private boolean firstMove;
-    private int initialPosition;
-
-    public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter, Context context, List<StreakObject> list) {
+    public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
         mAdapter = adapter;
-        activityContext = context;
-        streakList = list;
-        firstMove = true;
-        initialPosition = 0;
     }
 
     @Override
@@ -54,19 +38,42 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                           RecyclerView.ViewHolder target) {
-        //if (viewHolder.getItemViewType() != target.getItemViewType()) {
-        //    return false;
-        //}
-        mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-        if (firstMove) {
-            initialPosition = viewHolder.getAdapterPosition();
-            firstMove = false;
+        if (viewHolder.getItemViewType() != target.getItemViewType()) {
+            return false;
         }
+        mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+    }
+
+    @Override
+    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder,
+                                  int actionState) {
+        // We only want the active item
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+            if (viewHolder instanceof ItemTouchHelperViewHolder) {
+                ItemTouchHelperViewHolder itemViewHolder =
+                        (ItemTouchHelperViewHolder) viewHolder;
+                itemViewHolder.onItemSelected();
+            }
+        }
+
+        super.onSelectedChanged(viewHolder, actionState);
+    }
+
+    @Override
+    public void clearView(RecyclerView recyclerView,
+                          RecyclerView.ViewHolder viewHolder) {
+        super.clearView(recyclerView, viewHolder);
+
+        if (viewHolder instanceof ItemTouchHelperViewHolder) {
+            ItemTouchHelperViewHolder itemViewHolder =
+                    (ItemTouchHelperViewHolder) viewHolder;
+            itemViewHolder.onItemClear();
+        }
     }
 }

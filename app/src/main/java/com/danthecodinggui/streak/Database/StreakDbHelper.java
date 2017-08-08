@@ -79,8 +79,8 @@ public class StreakDbHelper extends SQLiteOpenHelper {
                 return;
         }
 
-        String selection = StreakContract.StreakTable.STREAK_VIEW_INDEX + " = ?";
-        String[] selectionArgs = { Integer.toString(editedStreak.getStreakViewIndex()) };
+        String selection = StreakContract.StreakTable._ID + " = ?";
+        String[] selectionArgs = { Long.toString(editedStreak.getStreakId()) };
 
         db.update(
                 StreakContract.StreakTable.TABLE_NAME,
@@ -128,8 +128,8 @@ public class StreakDbHelper extends SQLiteOpenHelper {
     public void DeleteStreak(StreakObject streakToDelete) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String selection = StreakContract.StreakTable.STREAK_VIEW_INDEX + " = ?";
-        String[] selectionArgs = {Integer.toString(streakToDelete.getStreakViewIndex())};
+        String selection = StreakContract.StreakTable._ID + " = ?";
+        String[] selectionArgs = {Long.toString(streakToDelete.getStreakId())};
 
         db.delete(StreakContract.StreakTable.TABLE_NAME, selection, selectionArgs);
 

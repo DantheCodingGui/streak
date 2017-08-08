@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         rcAdapter = new StreakRecyclerViewAdapter(streaks, this);
         streakRecycler.setAdapter(rcAdapter);
 
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(rcAdapter, this, listViewItems);
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(rcAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(streakRecycler);
     }
