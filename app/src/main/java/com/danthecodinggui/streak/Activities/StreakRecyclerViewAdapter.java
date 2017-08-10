@@ -187,6 +187,7 @@ class StreakRecyclerViewAdapter
             CardView card = (CardView)itemView.findViewById(streak_card_view);
             card.setCardBackgroundColor(Color.rgb(121, 121, 121));
             itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.LTGRAY);
+            itemView.setRotation(5);
         }
 
         /**
@@ -197,6 +198,7 @@ class StreakRecyclerViewAdapter
             CardView card = (CardView)itemView.findViewById(streak_card_view);
             card.setCardBackgroundColor(Color.WHITE);
             itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.TRANSPARENT);
+            itemView.setRotation(0);
         }
     }
 }

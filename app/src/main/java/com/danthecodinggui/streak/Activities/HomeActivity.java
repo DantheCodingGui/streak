@@ -29,6 +29,8 @@ public class HomeActivity extends AppCompatActivity {
     public static final int UPDATE_TEXT = 0;
     public static final int UPDATE_IS_PRIORITY = 1;
 
+    //public static final String LIST_SIZE = "LIST_SIZE";
+
     private List<StreakObject> listViewItems;
 
     private StreakRecyclerViewAdapter rcAdapter;
