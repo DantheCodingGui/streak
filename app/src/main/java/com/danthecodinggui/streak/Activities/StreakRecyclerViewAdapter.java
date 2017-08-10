@@ -87,7 +87,7 @@ class StreakRecyclerViewAdapter
         StreakObject ob = streakList.remove(position);
         notifyItemRemoved(position);
 
-        StreakDbHelper sDbHelper = new StreakDbHelper(linkedActivity);
+        StreakDbHelper sDbHelper = StreakDbHelper.getInstance(linkedActivity);
         sDbHelper.DeleteStreak(ob);
     }
 
@@ -102,7 +102,7 @@ class StreakRecyclerViewAdapter
     public boolean onItemMove(int fromPosition, int toPosition) {
         int i = fromPosition;
         int temp;
-        StreakDbHelper sDbHelper = new StreakDbHelper(linkedActivity);
+        StreakDbHelper sDbHelper = StreakDbHelper.getInstance(linkedActivity);
         if (fromPosition < toPosition) {
             for (; i < toPosition; ++i) {
                 sDbHelper.SwapListViewIndexes(streakList.get(i), streakList.get(i + 1));
@@ -172,7 +172,7 @@ class StreakRecyclerViewAdapter
         @Override
         public boolean onLongClick(View view) {
 
-            //StreakDbHelper sDbHelper = new StreakDbHelper();
+            //StreakDbHelper sDbHelper = StreakDbHelper.getInstance(linkedActivity);
             Log.d("boogie", "Long click detected");
 
             return true;

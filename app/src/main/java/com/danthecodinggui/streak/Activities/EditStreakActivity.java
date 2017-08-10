@@ -90,7 +90,7 @@ public class EditStreakActivity extends AppCompatActivity {
                     break;
                 }
 
-                StreakDbHelper sDbHelper = new StreakDbHelper(this);
+                StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
                 sDbHelper.UpdateStreakValues(new StreakObject(streakText, streakDuration, streakViewId), HomeActivity.UPDATE_TEXT);
 
                 output.putExtra("editedStreak", streakText);
@@ -115,7 +115,7 @@ public class EditStreakActivity extends AppCompatActivity {
      * @return primary key of new record
      */
     private long SaveToDatabase(StreakObject newStreak) {
-        StreakDbHelper sDbHelper = new StreakDbHelper(this);
+        StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
         return sDbHelper.AddStreak(newStreak);
     }
 }

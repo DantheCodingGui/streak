@@ -89,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
                 rcAdapter.notifyItemRemoved(listViewItems.size() - 1);
                 StreakObject deletedStreak = listViewItems.remove(listViewItems.size() - 1);
 
-                StreakDbHelper sDbHelper = new StreakDbHelper(this);
+                StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
                 sDbHelper.DeleteStreak(deletedStreak);
 
                 return true;
@@ -107,7 +107,7 @@ public class HomeActivity extends AppCompatActivity {
     private List<StreakObject> getListItemData(){
         listViewItems = new ArrayList<>();
 
-        StreakDbHelper sDbHelper = new StreakDbHelper(this);
+        StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
         sDbHelper.GetAllStreaks(listViewItems);
 
         return listViewItems;

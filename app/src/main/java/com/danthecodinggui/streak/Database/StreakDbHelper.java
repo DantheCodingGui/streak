@@ -18,12 +18,21 @@ import java.util.List;
 
 public class StreakDbHelper extends SQLiteOpenHelper {
 
+    private static StreakDbHelper instance;
+
     private static final String DATABASE_NAME = "streak.db";
 
     private static final int DATABASE_VERSION = 1;
 
     public StreakDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static synchronized StreakDbHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new StreakDbHelper(context.getApplicationContext());
+        }
+        return instance;
     }
 
     @Override
@@ -55,7 +64,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      */
     public long AddStreak(StreakObject newStreak) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(StreakContract.StreakTable.STREAK_DESCRIPTION, newStreak.getStreakText());
@@ -73,7 +82,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      */
     public void UpdateStreakValues(StreakObject editedStreak, int whatToUpdate) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
@@ -109,7 +118,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
         int temp = firstStreak.getStreakViewIndex();
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
@@ -145,13 +154,12 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param streakToDelete
      */
     public void DeleteStreak(StreakObject streakToDelete) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = instance.getWritableDatabase();
 
         String selection = StreakContract.StreakTable._ID + " = ?";
         String[] selectionArgs = {Long.toString(streakToDelete.getStreakId())};
 
         db.delete(StreakContract.StreakTable.TABLE_NAME, selection, selectionArgs);
-
     }
 
     /**
@@ -159,7 +167,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param recyclerViewItems
      */
     public void GetAllStreaks(List<StreakObject> recyclerViewItems) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = instance.getReadableDatabase();
 
         String[] projection = {
                 StreakContract.StreakTable._ID,
