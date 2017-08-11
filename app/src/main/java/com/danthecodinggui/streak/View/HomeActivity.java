@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static android.R.attr.data;
 import static com.danthecodinggui.streak.R.id.streak_card_view;
 
 /**
@@ -107,10 +108,12 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 startActivityForResult(newStreak, ADD_STREAK);
                 return true;
             case R.id.home_action_bar_remove:
-                rcAdapter.notifyItemRemoved(streakList.size() - 1);
-                StreakObject deletedStreak = streakList.remove(streakList.size() - 1);
+                if (streakList.size() > 0) {
+                    rcAdapter.notifyItemRemoved(streakList.size() - 1);
+                    StreakObject deletedStreak = streakList.remove(streakList.size() - 1);
 
-                presenter.DeleteStreak(deletedStreak);
+                    presenter.DeleteStreak(deletedStreak);
+                }
                 return true;
             case R.id.home_action_bar_overflow:
                 return true;
@@ -124,15 +127,17 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         String streakText;
         switch(requestCode) {
             case ADD_STREAK:
-                long streakId = data.getLongExtra("newStreakId", 0);
-                streakText = data.getStringExtra("newStreak");
-                int streakDuration = data.getIntExtra("newStreakDuration", 0);
-                //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
+                if (resultCode == RESULT_OK) {
+                    long streakId = data.getLongExtra("newStreakId", 0);
+                    streakText = data.getStringExtra("newStreak");
+                    int streakDuration = data.getIntExtra("newStreakDuration", 0);
+                    //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
 
-                StreakObject newStreak = new StreakObject(streakText, streakDuration);
-                streakList.add(newStreak);
-                newStreak.setStreakId(streakId);
-                rcAdapter.notifyItemInserted(streakList.size() - 1);
+                    StreakObject newStreak = new StreakObject(streakText, streakDuration);
+                    streakList.add(newStreak);
+                    newStreak.setStreakId(streakId);
+                    rcAdapter.notifyItemInserted(streakList.size() - 1);
+                }
                 break;
 
             case EDIT_STREAK:

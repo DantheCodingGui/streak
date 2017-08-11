@@ -93,7 +93,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                 output.putExtra("newStreak", streakText);
                 output.putExtra("newStreakDuration", streakDuration);
 
-                setResult(HomeActivity.ADD_STREAK, output);
+                setResult(RESULT_OK, output);
                 break;
             case (EDIT_STREAK):
                 if (initialStreak.equals(streakToSubmit)) {
