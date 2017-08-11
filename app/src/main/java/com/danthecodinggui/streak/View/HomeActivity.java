@@ -136,15 +136,17 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 break;
 
             case EDIT_STREAK:
-                boolean streakHasChanged = data.getBooleanExtra("hasStreakChanged", false);
-                if (!streakHasChanged)
-                    break;
-                streakText = data.getStringExtra("editedStreak");
-                int streakPosition = data.getIntExtra("editedStreakPosition", -1);
-                //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
+                if (resultCode == RESULT_OK) {
+                    boolean streakHasChanged = data.getBooleanExtra("hasStreakChanged", false);
+                    if (!streakHasChanged)
+                        break;
+                    streakText = data.getStringExtra("editedStreak");
+                    int streakPosition = data.getIntExtra("editedStreakPosition", -1);
+                    //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
 
-                streakList.get(streakPosition).setStreakText(streakText);
-                rcAdapter.notifyItemChanged(streakPosition);
+                    streakList.get(streakPosition).setStreakText(streakText);
+                    rcAdapter.notifyItemChanged(streakPosition);
+                }
                 break;
             default:
                 Log.d("Error", "Invalid return to HomeActivity");
@@ -235,22 +237,16 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             int i = fromPosition;
             if (fromPosition < toPosition) {
                 for (; i < toPosition; ++i) {
-                    SwapRecyclerViewItems(i, i + 1);
+                    Collections.swap(streakList, i, i + 1);
                 }
             }
             else {
                 for (; i > toPosition; --i) {
-                    SwapRecyclerViewItems(i, i - 1);
+                    Collections.swap(streakList, i, i - 1);
                 }
             }
-
             notifyItemMoved(fromPosition, toPosition);
             return true;
-        }
-
-        private void SwapRecyclerViewItems(int currentPosition, int nextPosition) {
-            //presenter.SwapStreaks(streakList.get(currentPosition), currentPosition, streakList.get(nextPosition), nextPosition);
-            Collections.swap(streakList, currentPosition, nextPosition);
         }
 
         /**
@@ -275,15 +271,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
              */
             @Override
             public void onClick(View view) {
-
-                Intent editStreak = new Intent(getApplicationContext(), EditStreakActivity.class);
-                editStreak.putExtra("streakText", streakText.getText());
-                editStreak.putExtra("viewId", getAdapterPosition());
-                editStreak.putExtra("streakId", streakList.get(getAdapterPosition()).getStreakId());
-                editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
-
-                Log.d("boogie", "before create options");
-                presenter.EditStreak(view, editStreak);
+                int pos = getAdapterPosition();
+                presenter.EditStreak(view, streakList.get(pos), pos);
             }
 
             /**
@@ -293,9 +282,6 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
              */
             @Override
             public boolean onLongClick(View view) {
-
-                Log.d("boogie", "Long click detected");
-
                 return true;
             }
 
@@ -310,7 +296,6 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.LTGRAY);
                 itemView.setRotation(5);
 
-                Log.d("boogie", "drag started");
                 streakListBeforeMove = new ArrayList<>(streakList);
             }
 
@@ -323,8 +308,6 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 card.setCardBackgroundColor(Color.WHITE);
                 itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.TRANSPARENT);
                 itemView.setRotation(0);
-
-                Log.d("boogie", "drag ended");
 
                 presenter.UpdateMovedList(streakListBeforeMove, streakList);
                 streakListBeforeMove.clear();

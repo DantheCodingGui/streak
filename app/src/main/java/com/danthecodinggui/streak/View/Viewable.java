@@ -7,6 +7,6 @@ import android.content.Context;
  */
 
 public interface Viewable {
-    public Context getActivityContext();
-    public String getStringResource(int resource);
+    Context getActivityContext();
+    String getStringResource(int resource);
 }

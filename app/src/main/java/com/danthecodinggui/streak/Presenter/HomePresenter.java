@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.danthecodinggui.streak.Data.Model;
+import com.danthecodinggui.streak.Data.Modelable;
 import com.danthecodinggui.streak.Data.StreakObject;
 import com.danthecodinggui.streak.R;
+import com.danthecodinggui.streak.View.EditStreakActivity;
 import com.danthecodinggui.streak.View.HomeActivity;
 import com.danthecodinggui.streak.View.Viewable;
 
@@ -22,7 +24,7 @@ import java.util.List;
 
 public class HomePresenter {
 
-    private Model model;
+    private Modelable model;
     private Viewable view;
 
     public HomePresenter(Viewable view) {
@@ -60,10 +62,15 @@ public class HomePresenter {
         model.UpdateStreaksOrder(movedStreaks, movedStreaksViewIds);
     }
 
-    public void EditStreak(View itemView, Intent editStreak) {
+    public void EditStreak(View itemView, StreakObject streakToEdit, int viewPos) {
+
+        Intent editStreak = new Intent((HomeActivity)view, EditStreakActivity.class);
+        editStreak.putExtra("viewId", viewPos);
+        editStreak.putExtra("streakId", streakToEdit.getStreakId());
+        editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
+
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation((HomeActivity)this.view, itemView, view.getStringResource(R.string.transition_edit_streak));
-        Log.d("boogie", "about to switch activity");
         ActivityCompat.startActivityForResult((HomeActivity)view, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
     }
 }

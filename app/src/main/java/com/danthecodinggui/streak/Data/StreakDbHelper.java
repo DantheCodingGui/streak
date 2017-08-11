@@ -221,4 +221,43 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         }
 
     }
+
+    public StreakObject GetEntry(long streakUniqueId) {
+        SQLiteDatabase db = instance.getReadableDatabase();
+
+        String[] projection = {
+                StreakContract.StreakTable._ID,
+                StreakContract.StreakTable.STREAK_DESCRIPTION,
+                StreakContract.StreakTable.STREAK_DURATION,
+                StreakContract.StreakTable.STREAK_IS_PRIORITY
+        };
+
+        String selection = StreakContract.StreakTable._ID + " = ?";
+        String[] selectionArgs = { Long.toString(streakUniqueId) };
+
+        Cursor cursor = db.query(
+                StreakContract.StreakTable.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        StreakObject queriedEntry = null;
+
+        while(cursor.moveToNext()) {
+            long streakId = cursor.getLong(cursor.getColumnIndexOrThrow((StreakContract.StreakTable._ID)));
+            String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));
+            int streakDuration = cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DURATION));
+            boolean streakPriority = (cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_IS_PRIORITY)) != 0);
+
+            queriedEntry = new StreakObject(streakText, streakDuration);
+            queriedEntry.setStreakIsPriority(streakPriority);
+            queriedEntry.setStreakId(streakId);
+        }
+        cursor.close();
+        return queriedEntry;
+    }
 }

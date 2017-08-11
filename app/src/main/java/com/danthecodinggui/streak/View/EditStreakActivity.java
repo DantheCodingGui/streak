@@ -43,29 +43,33 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_streak);
 
+        presenter = new EditPresenter(this);
+
         Intent intent = getIntent();
         function = intent.getIntExtra("function", ADD_STREAK);
 
         switch(function) {
             case (ADD_STREAK):
+
                 streakDuration = 1;
-                streakViewId = getIntent().getIntExtra("listSize", 0);
+                streakViewId = getIntent().getIntExtra("listSize", -1);
+
                 break;
             case (EDIT_STREAK):
-                streakText = getIntent().getStringExtra("streakText");
-                EditText text = (EditText)findViewById(editStreak);
-                text.setText(streakText);
-                streakUniqueId = getIntent().getLongExtra("streakId", -1);
-                Log.d("boogie", "streak ID is " + streakUniqueId);
-                streakViewId = getIntent().getIntExtra("viewId", -1);
 
-                initialStreak = new StreakObject(streakText, streakDuration);
+                streakViewId = getIntent().getIntExtra("viewId", -1);
+                streakUniqueId = getIntent().getLongExtra("streakId", -1);
+                initialStreak = presenter.GetStreak(streakUniqueId);
+
+                streakText = initialStreak.getStreakText();
+
+                EditText text = (EditText)findViewById(editStreak);
+                text.append(streakText);
                 break;
             default:
                 Log.d("Error", "Invalid intent to EditStreakActivity");
                 return;
         }
-        presenter = new EditPresenter(this);
     }
 
     /**
@@ -105,7 +109,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                 output.putExtra("editedStreakPosition", streakViewId);
                 output.putExtra("hasStreakChanged", true);
 
-                setResult(HomeActivity.EDIT_STREAK, output);
+                setResult(RESULT_OK, output);
                 break;
             default:
                 Log.d("Error", "Invalid call to SubmitStreak");

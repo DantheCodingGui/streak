@@ -1,6 +1,7 @@
 package com.danthecodinggui.streak.Data;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.List;
 
@@ -48,6 +49,11 @@ public class Model implements Modelable {
     @Override
     public void UpdateStreaksOrder(List<StreakObject> movedStreaks, List<Integer> movedStreaksViewPositions) {
         database.UpdateEntriesOrder(movedStreaks, movedStreaksViewPositions);
+    }
+
+    @Override
+    public StreakObject GetStreak(long streakUniqueId) {
+        return database.GetEntry(streakUniqueId);
     }
 
     @Override
