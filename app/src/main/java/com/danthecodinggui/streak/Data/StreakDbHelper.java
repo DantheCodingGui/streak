@@ -93,7 +93,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
                 values.put(StreakContract.StreakTable.STREAK_IS_PRIORITY, editedStreak.getStreakIsPriority());
                 break;
             default:
-                Log.d("Error", "Invalid call to UpdateStreak");
+                Log.d("Er", "Invalid call to UpdateStreak");
                 return;
         }
 
@@ -196,5 +196,28 @@ public class StreakDbHelper extends SQLiteOpenHelper {
             ob.setStreakId(streakId);
         }
         cursor.close();
+    }
+
+    public void UpdateEntriesOrder(List<StreakObject> movedStreaks, List<Integer> streaksNewPositions) {
+        SQLiteDatabase db = instance.getWritableDatabase();
+
+        ContentValues values;
+
+        for (int i = 0; i < movedStreaks.size(); ++i) {
+            values = new ContentValues();
+
+            values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, streaksNewPositions.get(i));
+
+            String selection = StreakContract.StreakTable._ID + " = ?";
+            String[] selectionArgs = { Long.toString(movedStreaks.get(i).getStreakId()) };
+
+            db.update(
+                    StreakContract.StreakTable.TABLE_NAME,
+                    values,
+                    selection,
+                    selectionArgs
+            );
+        }
+
     }
 }

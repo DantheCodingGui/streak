@@ -46,6 +46,11 @@ public class Model implements Modelable {
     }
 
     @Override
+    public void UpdateStreaksOrder(List<StreakObject> movedStreaks, List<Integer> movedStreaksViewPositions) {
+        database.UpdateEntriesOrder(movedStreaks, movedStreaksViewPositions);
+    }
+
+    @Override
     public List<StreakObject> GetAllStreaks(List<StreakObject> entryList) {
         database.GetAllStreaks(entryList);
         return entryList;

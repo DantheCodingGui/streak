@@ -93,7 +93,6 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                 if (initialStreak.equals(streakToSubmit)) {
                     output.putExtra("hasStreakChanged", false);
                     setResult(HomeActivity.EDIT_STREAK, output);
-                    Log.d("boogie", "value sent was false");
                     break;
                 }
 
@@ -118,5 +117,10 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
     @Override
     public Context getActivityContext() {
         return this;
+    }
+
+    @Override
+    public String getStringResource(int resource) {
+        return getString(resource);
     }
 }

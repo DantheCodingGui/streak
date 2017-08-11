@@ -22,7 +22,6 @@ public class EditPresenter {
         return model.AddStreak(streakToAdd, viewPos);
     }
 
-
     public void UpdateStreak(StreakObject streakObject, int whatToUpdate) {
         model.UpdateStreak(streakObject, whatToUpdate);
     }

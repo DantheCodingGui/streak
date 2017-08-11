@@ -47,6 +47,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
     //public static final String LIST_SIZE = "LIST_SIZE";
 
     private List<StreakObject> streakList;
+    private List<StreakObject> streakListBeforeMove;
+
     private HomePresenter presenter;
 
     private StreakRecyclerViewAdapter rcAdapter;
@@ -155,6 +157,11 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         return this;
     }
 
+    @Override
+    public String getStringResource(int resource) {
+        return getString(resource);
+    }
+
     /**
      * Adapter class linking streak data to user interface
      */
@@ -242,7 +249,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         }
 
         private void SwapRecyclerViewItems(int currentPosition, int nextPosition) {
-            presenter.SwapStreaks(streakList.get(currentPosition), currentPosition, streakList.get(nextPosition), nextPosition);
+            //presenter.SwapStreaks(streakList.get(currentPosition), currentPosition, streakList.get(nextPosition), nextPosition);
             Collections.swap(streakList, currentPosition, nextPosition);
         }
 
@@ -274,10 +281,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 editStreak.putExtra("viewId", getAdapterPosition());
                 editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
 
-                ActivityOptionsCompat options =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(getParent(), view, getParent().getString(R.string.transition_edit_streak));
-
-                ActivityCompat.startActivityForResult(getParent(), editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
+                Log.d("boogie", "before create options");
+                presenter.EditStreak(view, editStreak);
             }
 
             /**
@@ -288,7 +293,6 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             @Override
             public boolean onLongClick(View view) {
 
-                //StreakDbHelper sDbHelper = StreakDbHelper.getInstance(linkedActivity);
                 Log.d("boogie", "Long click detected");
 
                 return true;
@@ -304,6 +308,9 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 card.setCardBackgroundColor(Color.rgb(121, 121, 121));
                 itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.LTGRAY);
                 itemView.setRotation(5);
+
+                Log.d("boogie", "drag started");
+                streakListBeforeMove = new ArrayList<>(streakList);
             }
 
             /**
@@ -315,6 +322,11 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 card.setCardBackgroundColor(Color.WHITE);
                 itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.TRANSPARENT);
                 itemView.setRotation(0);
+
+                Log.d("boogie", "drag ended");
+
+                presenter.UpdateMovedList(streakListBeforeMove, streakList);
+                streakListBeforeMove.clear();
             }
         }
     }

@@ -1,9 +1,18 @@
 package com.danthecodinggui.streak.Presenter;
 
+import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.util.Log;
+import android.view.View;
+
 import com.danthecodinggui.streak.Data.Model;
 import com.danthecodinggui.streak.Data.StreakObject;
+import com.danthecodinggui.streak.R;
+import com.danthecodinggui.streak.View.HomeActivity;
 import com.danthecodinggui.streak.View.Viewable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,5 +41,29 @@ public class HomePresenter {
 
     public void SwapStreaks(StreakObject firstStreak, int firstViewPos, StreakObject secondStreak, int secondViewPos) {
         model.SwapStreaks(firstStreak, firstViewPos, secondStreak, secondViewPos);
+    }
+
+    public void UpdateMovedList(List<StreakObject> streakListBeforeMove, List<StreakObject> streakList) {
+        //check which objects have changed position
+        //send new list of streakobjects with changed positions to database method, remove swap one and old implementation
+
+        List<StreakObject> movedStreaks = new ArrayList<>();
+        List<Integer> movedStreaksViewIds = new ArrayList<>();
+        StreakObject movedStreak;
+
+        for (int i = 0; i < streakList.size(); ++i) {
+            if (streakListBeforeMove.get(i).getStreakId() != (movedStreak = streakList.get(i)).getStreakId()) {
+                movedStreaks.add(movedStreak);
+                movedStreaksViewIds.add(i);
+            }
+        }
+        model.UpdateStreaksOrder(movedStreaks, movedStreaksViewIds);
+    }
+
+    public void EditStreak(View itemView, Intent editStreak) {
+        ActivityOptionsCompat options =
+                ActivityOptionsCompat.makeSceneTransitionAnimation((HomeActivity)this.view, itemView, view.getStringResource(R.string.transition_edit_streak));
+        Log.d("boogie", "about to switch activity");
+        ActivityCompat.startActivityForResult((HomeActivity)view, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
     }
 }
