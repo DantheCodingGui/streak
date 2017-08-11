@@ -25,6 +25,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
     private int streakDuration;
 
     private int streakViewId;
+    private long streakUniqueId;
 
     private boolean streakIsPriority;
 
@@ -54,7 +55,8 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                 streakText = getIntent().getStringExtra("streakText");
                 EditText text = (EditText)findViewById(editStreak);
                 text.setText(streakText);
-
+                streakUniqueId = getIntent().getLongExtra("streakId", -1);
+                Log.d("boogie", "streak ID is " + streakUniqueId);
                 streakViewId = getIntent().getIntExtra("viewId", -1);
 
                 initialStreak = new StreakObject(streakText, streakDuration);
@@ -96,7 +98,8 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                     break;
                 }
 
-                presenter.UpdateStreak(new StreakObject(streakText, streakDuration), HomeActivity.UPDATE_TEXT);
+                streakToSubmit.setStreakId(streakUniqueId);
+                presenter.UpdateStreak(streakToSubmit, HomeActivity.UPDATE_TEXT);
 
                 output.putExtra("editedStreak", streakText);
                 output.putExtra("editedStreakPosition", streakViewId);

@@ -100,12 +100,13 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         String selection = StreakContract.StreakTable._ID + " = ?";
         String[] selectionArgs = { Long.toString(editedStreak.getStreakId()) };
 
-        db.update(
+        int val = db.update(
                 StreakContract.StreakTable.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs
         );
+        Log.d("boogie", "value is " + Integer.toString(val));
     }
 
     /**

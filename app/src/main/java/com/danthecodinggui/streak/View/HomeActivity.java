@@ -279,6 +279,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 Intent editStreak = new Intent(getApplicationContext(), EditStreakActivity.class);
                 editStreak.putExtra("streakText", streakText.getText());
                 editStreak.putExtra("viewId", getAdapterPosition());
+                editStreak.putExtra("streakId", streakList.get(getAdapterPosition()).getStreakId());
                 editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
 
                 Log.d("boogie", "before create options");
