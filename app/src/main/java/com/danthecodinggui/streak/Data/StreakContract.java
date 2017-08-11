@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Database;
+package com.danthecodinggui.streak.Data;
 
 import android.provider.BaseColumns;
 

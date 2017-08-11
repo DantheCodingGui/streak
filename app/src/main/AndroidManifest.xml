@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round">
         <activity
-            android:name=".Activities.HomeActivity"
+            android:name=".View.HomeActivity"
             android:theme="@style/HomeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.EditStreakActivity"
+            android:name=".View.EditStreakActivity"
             android:theme="@style/EditStreakTheme">
         </activity>
     </application>

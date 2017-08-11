@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Activities.Util;
+package com.danthecodinggui.streak.View.ItemTouchHelper;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;

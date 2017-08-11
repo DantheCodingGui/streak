@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Database;
+package com.danthecodinggui.streak.Data;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,8 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.danthecodinggui.streak.Activities.HomeActivity;
-import com.danthecodinggui.streak.Activities.StreakObject;
+import com.danthecodinggui.streak.View.HomeActivity;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    public StreakDbHelper(Context context) {
+    private StreakDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -62,7 +61,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param newStreak the object to add
      * @return primary key of the new database entry
      */
-    public long AddStreak(StreakObject newStreak) {
+    public long AddStreak(StreakObject newStreak, int viewPos) {
 
         SQLiteDatabase db = instance.getWritableDatabase();
 
@@ -70,7 +69,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         values.put(StreakContract.StreakTable.STREAK_DESCRIPTION, newStreak.getStreakText());
         values.put(StreakContract.StreakTable.STREAK_DURATION, newStreak.getStreakDuration());
         values.put(StreakContract.StreakTable.STREAK_IS_PRIORITY, newStreak.getStreakIsPriority());
-        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, newStreak.getStreakViewIndex());
+        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, viewPos);
 
         return db.insert(StreakContract.StreakTable.TABLE_NAME, null, values);
     }
@@ -114,18 +113,16 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param firstStreak
      * @param secondStreak
      */
-    public void SwapListViewIndexes(StreakObject firstStreak, StreakObject secondStreak) {
-
-        int temp = firstStreak.getStreakViewIndex();
+    public void SwapListViewIndexes(StreakObject firstStreak, int firstViewPos, StreakObject secondStreak, int secondViewPos) {
 
         SQLiteDatabase db = instance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, secondStreak.getStreakViewIndex());
+        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, secondViewPos);
 
-        String selection = StreakContract.StreakTable.STREAK_VIEW_INDEX + " = ?";
-        String[] selectionArgs = { Integer.toString(temp) };
+        String selection = StreakContract.StreakTable._ID + " = ?";
+        String[] selectionArgs = { Long.toString(firstStreak.getStreakId()) };
 
         db.update(
                 StreakContract.StreakTable.TABLE_NAME,
@@ -136,7 +133,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
         values = new ContentValues();
 
-        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, temp);
+        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, firstViewPos);
 
         selection = StreakContract.StreakTable._ID + " = ?";
         selectionArgs = new String[]{ Long.toString(secondStreak.getStreakId()) };
@@ -194,8 +191,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
             String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));
             int streakDuration = cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DURATION));
             boolean streakPriority = (cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_IS_PRIORITY)) != 0);
-            int streakViewIndex = cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_VIEW_INDEX));
-            StreakObject ob = new StreakObject(streakText, streakDuration, streakViewIndex);
+            StreakObject ob = new StreakObject(streakText, streakDuration);
             recyclerViewItems.add(ob);
             ob.setStreakId(streakId);
         }

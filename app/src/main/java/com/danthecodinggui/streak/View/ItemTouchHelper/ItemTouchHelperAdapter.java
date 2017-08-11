@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Activities.Util;
+package com.danthecodinggui.streak.View.ItemTouchHelper;
 
 /**
  * Defines methods that the ItemTouchHelper callback subclass will redirect to the

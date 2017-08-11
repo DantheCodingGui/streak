@@ -1,5 +1,6 @@
-package com.danthecodinggui.streak.Activities;
+package com.danthecodinggui.streak.View;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,7 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.danthecodinggui.streak.Database.StreakDbHelper;
+import com.danthecodinggui.streak.Data.StreakObject;
+import com.danthecodinggui.streak.Presenter.EditPresenter;
 import com.danthecodinggui.streak.R;
 
 import static com.danthecodinggui.streak.R.id.editStreak;
@@ -15,7 +17,9 @@ import static com.danthecodinggui.streak.R.id.editStreak;
 /**
  * Screen shown whenever activity added or existing streak clicked by user
  */
-public class EditStreakActivity extends AppCompatActivity {
+public class EditStreakActivity extends AppCompatActivity implements Viewable {
+
+    private EditPresenter presenter;
 
     private String streakText;
     private int streakDuration;
@@ -29,7 +33,9 @@ public class EditStreakActivity extends AppCompatActivity {
     public static final int ADD_STREAK = 0;
     public static final int EDIT_STREAK = 1;
 
-    private StreakObject oldStreak;
+    //streak object as it exists entering this activity, used later on to check for changes upon
+    //activity exit
+    private StreakObject initialStreak;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +57,13 @@ public class EditStreakActivity extends AppCompatActivity {
 
                 streakViewId = getIntent().getIntExtra("viewId", -1);
 
-                oldStreak = new StreakObject(streakText, streakDuration, streakViewId);
+                initialStreak = new StreakObject(streakText, streakDuration);
                 break;
             default:
                 Log.d("Error", "Invalid intent to EditStreakActivity");
-                break;
+                return;
         }
+        presenter = new EditPresenter(this);
     }
 
     /**
@@ -68,13 +75,13 @@ public class EditStreakActivity extends AppCompatActivity {
         EditText text = (EditText)findViewById(editStreak);
         streakText = text.getText().toString();
 
-        StreakObject ob = new StreakObject(streakText, streakDuration, streakViewId);
+        StreakObject streakToSubmit = new StreakObject(streakText, streakDuration);
 
         Intent output = new Intent();
 
         switch(function) {
             case (ADD_STREAK):
-                long primaryKey = SaveToDatabase(ob);
+                long primaryKey = presenter.AddStreak(streakToSubmit, streakViewId);
 
                 output.putExtra("newStreakId", primaryKey);
                 output.putExtra("newStreak", streakText);
@@ -83,15 +90,14 @@ public class EditStreakActivity extends AppCompatActivity {
                 setResult(HomeActivity.ADD_STREAK, output);
                 break;
             case (EDIT_STREAK):
-                if (oldStreak.equals(ob)) {
+                if (initialStreak.equals(streakToSubmit)) {
                     output.putExtra("hasStreakChanged", false);
                     setResult(HomeActivity.EDIT_STREAK, output);
                     Log.d("boogie", "value sent was false");
                     break;
                 }
 
-                StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
-                sDbHelper.UpdateStreakValues(new StreakObject(streakText, streakDuration, streakViewId), HomeActivity.UPDATE_TEXT);
+                presenter.UpdateStreak(new StreakObject(streakText, streakDuration), HomeActivity.UPDATE_TEXT);
 
                 output.putExtra("editedStreak", streakText);
                 output.putExtra("editedStreakPosition", streakViewId);
@@ -109,13 +115,8 @@ public class EditStreakActivity extends AppCompatActivity {
         finish();
     }
 
-    /**
-     * Calls database helper method to add streak object to the database
-     * @param newStreak streak object to add to the database
-     * @return primary key of new record
-     */
-    private long SaveToDatabase(StreakObject newStreak) {
-        StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
-        return sDbHelper.AddStreak(newStreak);
+    @Override
+    public Context getActivityContext() {
+        return this;
     }
 }

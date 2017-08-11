@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Activities;
+package com.danthecodinggui.streak.Data;
 
 /**
  * Streak Object for holding information such as streak text, time kept etc.
@@ -10,17 +10,15 @@ public class StreakObject {
     private String streakText;
     private int streakDuration;
     private boolean isPriority;
-    private int viewIndex;
 
     /**
      * Data model represented in RecyclerView
      * @param streakText The streak description
      */
-    public StreakObject(String streakText, int streakDuration, int viewIndex) {
+    public StreakObject(String streakText, int streakDuration) {
         this.streakText = streakText;
         this.streakDuration = streakDuration;
         this.isPriority = false;
-        this.viewIndex = viewIndex;
         id = 0;
     }
 
@@ -34,8 +32,7 @@ public class StreakObject {
 
         return streakText.equals(otherStreak.getStreakText())
                 && streakDuration == otherStreak.getStreakDuration()
-                && isPriority == otherStreak.getStreakIsPriority()
-                && viewIndex == otherStreak.getStreakViewIndex();
+                && isPriority == otherStreak.getStreakIsPriority();
 
     }
 
@@ -60,12 +57,6 @@ public class StreakObject {
         ++streakDuration;
     }
 
-    public int getStreakViewIndex() {
-        return viewIndex;
-    }
-    public void setStreakViewIndex(int newViewIndex) {
-        viewIndex = newViewIndex;
-    }
 
     public boolean getStreakIsPriority() {
         return isPriority;

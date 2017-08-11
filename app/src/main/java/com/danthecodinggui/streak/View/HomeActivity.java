@@ -1,6 +1,6 @@
-package com.danthecodinggui.streak.Activities;
+package com.danthecodinggui.streak.View;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
@@ -19,10 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.danthecodinggui.streak.Activities.Util.ItemTouchHelperAdapter;
-import com.danthecodinggui.streak.Activities.Util.ItemTouchHelperViewHolder;
-import com.danthecodinggui.streak.Activities.Util.SimpleItemTouchHelperCallback;
-import com.danthecodinggui.streak.Database.StreakDbHelper;
+import com.danthecodinggui.streak.View.ItemTouchHelper.ItemTouchHelperAdapter;
+import com.danthecodinggui.streak.View.ItemTouchHelper.ItemTouchHelperViewHolder;
+import com.danthecodinggui.streak.View.ItemTouchHelper.SimpleItemTouchHelperCallback;
+import com.danthecodinggui.streak.Data.StreakObject;
+import com.danthecodinggui.streak.Presenter.HomePresenter;
 import com.danthecodinggui.streak.R;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import static com.danthecodinggui.streak.R.id.streak_card_view;
  * The home screen containing all current streaks in card form, which can be displayed in a number
  * of ways
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements Viewable {
 
     public static final int ADD_STREAK = 0;
     public static final int EDIT_STREAK = 1;
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
     //public static final String LIST_SIZE = "LIST_SIZE";
 
     private List<StreakObject> streakList;
+    private HomePresenter presenter;
 
     private StreakRecyclerViewAdapter rcAdapter;
 
@@ -59,14 +61,15 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        presenter = new HomePresenter(this);
+        streakList = presenter.getModelData(new ArrayList<StreakObject>());
+
         RecyclerView streakRecycler = (RecyclerView)findViewById(R.id.home_container);
 
         StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
         streakRecycler.setLayoutManager(streakLayoutManager);
 
-        List<StreakObject> streakData = getListItemData();
-
-        rcAdapter = new StreakRecyclerViewAdapter(streakData);
+        rcAdapter = new StreakRecyclerViewAdapter(streakList);
         streakRecycler.setAdapter(rcAdapter);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(rcAdapter);
@@ -105,28 +108,13 @@ public class HomeActivity extends AppCompatActivity {
                 rcAdapter.notifyItemRemoved(streakList.size() - 1);
                 StreakObject deletedStreak = streakList.remove(streakList.size() - 1);
 
-                StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
-                sDbHelper.DeleteStreak(deletedStreak);
-
+                presenter.DeleteStreak(deletedStreak);
                 return true;
             case R.id.home_action_bar_overflow:
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Checks for existing streaks saved in database, if they exist then load into list.
-     * @return List containing existing streaks
-     */
-    private List<StreakObject> getListItemData(){
-        streakList = new ArrayList<>();
-
-        StreakDbHelper sDbHelper = StreakDbHelper.getInstance(this);
-        sDbHelper.GetAllStreaks(streakList);
-
-        return streakList;
     }
 
     @Override
@@ -139,7 +127,7 @@ public class HomeActivity extends AppCompatActivity {
                 int streakDuration = data.getIntExtra("newStreakDuration", 0);
                 //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
 
-                StreakObject newStreak = new StreakObject(streakText, streakDuration, streakList.size());
+                StreakObject newStreak = new StreakObject(streakText, streakDuration);
                 streakList.add(newStreak);
                 newStreak.setStreakId(streakId);
                 rcAdapter.notifyItemInserted(streakList.size() - 1);
@@ -149,7 +137,6 @@ public class HomeActivity extends AppCompatActivity {
                 boolean streakHasChanged = data.getBooleanExtra("hasStreakChanged", false);
                 if (!streakHasChanged)
                     break;
-                Log.d("boogie", "value received was true");
                 streakText = data.getStringExtra("editedStreak");
                 int streakPosition = data.getIntExtra("editedStreakPosition", -1);
                 //boolean streakIsPriority = data.getBooleanExtra("newStreakIsPriority", false);
@@ -161,6 +148,11 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("Error", "Invalid return to HomeActivity");
                 break;
         }
+    }
+
+    @Override
+    public Context getActivityContext() {
+        return this;
     }
 
     /**
@@ -218,11 +210,10 @@ public class HomeActivity extends AppCompatActivity {
          */
         @Override
         public void onItemDismiss(int position) {
-            StreakObject ob = streakList.remove(position);
+            StreakObject streakToDelete = streakList.remove(position);
             notifyItemRemoved(position);
 
-            StreakDbHelper sDbHelper = StreakDbHelper.getInstance(getApplicationContext());
-            sDbHelper.DeleteStreak(ob);
+            presenter.DeleteStreak(streakToDelete);
         }
 
         /**
@@ -235,32 +226,24 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public boolean onItemMove(int fromPosition, int toPosition) {
             int i = fromPosition;
-            int temp;
-            StreakDbHelper sDbHelper = StreakDbHelper.getInstance(getApplicationContext());
             if (fromPosition < toPosition) {
                 for (; i < toPosition; ++i) {
-                    sDbHelper.SwapListViewIndexes(streakList.get(i), streakList.get(i + 1));
-
-                    temp = streakList.get(i).getStreakViewIndex();
-                    streakList.get(i).setStreakViewIndex(streakList.get(i + 1).getStreakViewIndex());
-                    streakList.get(i + 1).setStreakViewIndex(temp);
-
-                    Collections.swap(streakList, i, i + 1);
+                    SwapRecyclerViewItems(i, i + 1);
                 }
             }
             else {
                 for (; i > toPosition; --i) {
-                    sDbHelper.SwapListViewIndexes(streakList.get(i), streakList.get(i - 1));
-
-                    temp = streakList.get(i).getStreakViewIndex();
-                    streakList.get(i).setStreakViewIndex(streakList.get(i - 1).getStreakViewIndex());
-                    streakList.get(i - 1).setStreakViewIndex(temp);
-
-                    Collections.swap(streakList, i, i - 1);
+                    SwapRecyclerViewItems(i, i - 1);
                 }
             }
+
             notifyItemMoved(fromPosition, toPosition);
             return true;
+        }
+
+        private void SwapRecyclerViewItems(int currentPosition, int nextPosition) {
+            presenter.SwapStreaks(streakList.get(currentPosition), currentPosition, streakList.get(nextPosition), nextPosition);
+            Collections.swap(streakList, currentPosition, nextPosition);
         }
 
         /**
@@ -276,19 +259,18 @@ public class HomeActivity extends AppCompatActivity {
                 streakText = (TextView)itemView.findViewById(R.id.streak_text);
 
                 view.setOnClickListener(this);
+                view.setOnLongClickListener(this);
             }
 
             /**
-             * Opens edit streak activiy
+             * Opens edit streak activity
              * @param view
              */
             @Override
             public void onClick(View view) {
-                //FOR EDITING STREAK
 
                 Intent editStreak = new Intent(getApplicationContext(), EditStreakActivity.class);
                 editStreak.putExtra("streakText", streakText.getText());
-                view.setOnLongClickListener(this);
                 editStreak.putExtra("viewId", getAdapterPosition());
                 editStreak.putExtra("function", EditStreakActivity.EDIT_STREAK);
 

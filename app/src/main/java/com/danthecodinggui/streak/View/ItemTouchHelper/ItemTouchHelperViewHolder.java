@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Activities.Util;
+package com.danthecodinggui.streak.View.ItemTouchHelper;
 
 /**
  * Implemented by StreakViewHolder to change appearance of CardView when in motion
