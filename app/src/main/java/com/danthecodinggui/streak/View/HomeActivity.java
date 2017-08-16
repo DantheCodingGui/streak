@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,6 +80,9 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(rcAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(streakRecycler);
+
+        Toolbar appBar = (Toolbar)findViewById(R.id.tbar_app_bar);
+        setSupportActionBar(appBar);
     }
 
     /**
