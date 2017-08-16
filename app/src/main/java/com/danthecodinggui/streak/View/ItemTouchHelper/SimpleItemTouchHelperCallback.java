@@ -78,7 +78,7 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
             if (viewHolder instanceof ItemTouchHelperViewHolder) {
                 ItemTouchHelperViewHolder itemViewHolder =
                         (ItemTouchHelperViewHolder) viewHolder;
-                itemViewHolder.onItemSelected();
+                itemViewHolder.onItemSelected(actionState);
             }
         }
 

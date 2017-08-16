@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -294,12 +295,19 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
              * Changes appearance of view when start drag and drop movement
              */
             @Override
-            public void onItemSelected() {
+            public void onItemSelected(int actionState) {
                 //CHANGE APPEARANCE OF PICKED UP CARDS HERE
-                CardView card = (CardView)itemView.findViewById(streak_card_view);
-                card.setCardBackgroundColor(Color.rgb(121, 121, 121));
-                itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.LTGRAY);
-                itemView.setRotation(5);
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    CardView card = (CardView) itemView.findViewById(streak_card_view);
+                    card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_drag_border));
+                    itemView.findViewById(R.id.card_content_container).setBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_drag_background));
+                    itemView.setRotation(5);
+                }
+                else if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    CardView card = (CardView) itemView.findViewById(streak_card_view);
+                    card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_swipe_border));
+                    itemView.findViewById(R.id.card_content_container).setBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_swipe_background));
+                }
 
                 streakListBeforeMove = new ArrayList<>(streakList);
             }
