@@ -6,5 +6,6 @@
 
     <string name="transition_edit_streak">edit_streak</string>
 
-    <string name="card_duration">Streak kept for %1$d days</string>
+    <string name="card_duration">Streak at %1$d</string>
+    <string name="card_duration_init">Streak not started yet</string>
 </resources>

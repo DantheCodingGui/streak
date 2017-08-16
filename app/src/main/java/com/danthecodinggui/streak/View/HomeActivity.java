@@ -203,7 +203,12 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             StreakObject ob = streakList.get(pos);
             //use presenter to get how long streak is and style coordingly
             holder.streakText.setText(ob.getStreakText());
-            holder.streakDuration.setText(getResources().getString(R.string.card_duration, ob.getStreakDuration()));
+            if (ob.getStreakDuration() == 0) {
+                holder.streakDuration.setText(getResources().getString(R.string.card_duration_init));
+            }
+            else {
+                holder.streakDuration.setText(getResources().getString(R.string.card_duration, ob.getStreakDuration()));
+            }
         }
 
         /** Needed for RecyclerViewAdapter implementation
