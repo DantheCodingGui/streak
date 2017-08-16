@@ -102,25 +102,18 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         int id = item.getItemId();
 
         switch(id) {
-            case R.id.home_action_bar_add:
-                Intent newStreak = new Intent(this, EditStreakActivity.class);
-                newStreak.putExtra("listSize", streakList.size());
-                newStreak.putExtra("function", EditStreakActivity.ADD_STREAK);
-                startActivityForResult(newStreak, ADD_STREAK);
-                return true;
-            case R.id.home_action_bar_remove:
-                if (streakList.size() > 0) {
-                    rcAdapter.notifyItemRemoved(streakList.size() - 1);
-                    StreakObject deletedStreak = streakList.remove(streakList.size() - 1);
-
-                    presenter.DeleteStreak(deletedStreak);
-                }
-                return true;
             case R.id.home_action_bar_overflow:
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void AddStreak(View view) {
+        Intent newStreak = new Intent(this, EditStreakActivity.class);
+        newStreak.putExtra("listSize", streakList.size());
+        newStreak.putExtra("function", EditStreakActivity.ADD_STREAK);
+        startActivityForResult(newStreak, ADD_STREAK);
     }
 
     @Override

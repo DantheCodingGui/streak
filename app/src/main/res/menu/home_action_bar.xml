@@ -4,18 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/home_action_bar_add"
-        android:title="@string/home_add"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_add_white_24dp" />
-
-    <item
-        android:id="@+id/home_action_bar_remove"
-        android:title="@string/home_remove"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_remove_white_24dp" />
-
-    <item
         android:id="@+id/home_action_bar_overflow"
         android:title="@string/home_overflow"
         app:showAsAction="never" />
