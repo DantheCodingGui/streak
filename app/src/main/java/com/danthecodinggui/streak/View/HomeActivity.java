@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +52,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
 
     private HomePresenter presenter;
 
+    private RecyclerView streakRecycler;
     private StreakRecyclerViewAdapter rcAdapter;
 
     /**
@@ -66,7 +68,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         presenter = new HomePresenter(this);
         streakList = presenter.getModelData(new ArrayList<StreakObject>());
 
-        RecyclerView streakRecycler = (RecyclerView)findViewById(R.id.home_container);
+        streakRecycler = (RecyclerView)findViewById(R.id.home_container);
 
         StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
         streakRecycler.setLayoutManager(streakLayoutManager);
@@ -103,6 +105,18 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         int id = item.getItemId();
 
         switch(id) {
+            case R.id.btn_swap_view:
+                if (streakRecycler.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+                    streakRecycler.setLayoutManager(new LinearLayoutManager(this));
+                    streakRecycler.setAdapter(rcAdapter);
+                    item.setIcon(R.drawable.ic_view_quilt_white_24dp);
+                }
+                else {
+                    streakRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, 1));
+                    streakRecycler.setAdapter(rcAdapter);
+                    item.setIcon(R.drawable.ic_view_stream_white_24dp);
+                }
+                return true;
             case R.id.home_action_bar_overflow:
                 return true;
         }

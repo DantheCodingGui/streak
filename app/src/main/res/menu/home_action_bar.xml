@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/btn_swap_view"
+        android:title="@string/swap_view"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_view_stream_white_24dp"/>
+
+    <item
         android:id="@+id/home_action_bar_overflow"
         android:title="@string/home_overflow"
         app:showAsAction="never" />
