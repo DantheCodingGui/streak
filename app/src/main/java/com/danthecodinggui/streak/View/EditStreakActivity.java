@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
@@ -45,13 +47,18 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
 
         presenter = new EditPresenter(this);
 
+        Toolbar editBar = (Toolbar)findViewById(R.id.tbar_edit_bar);
+        setSupportActionBar(editBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
         function = intent.getIntExtra("function", ADD_STREAK);
 
         switch(function) {
             case (ADD_STREAK):
 
-                streakDuration = 1;
+                streakDuration = 0;
                 streakViewId = getIntent().getIntExtra("listSize", -1);
 
                 break;
@@ -60,6 +67,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                 streakViewId = getIntent().getIntExtra("viewId", -1);
                 streakUniqueId = getIntent().getLongExtra("streakId", -1);
                 initialStreak = presenter.GetStreak(streakUniqueId);
+                streakDuration = initialStreak.getStreakDuration();
 
                 streakText = initialStreak.getStreakText();
 
@@ -70,6 +78,17 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
                 Log.d("Error", "Invalid intent to EditStreakActivity");
                 return;
         }
+    }
+
+    /**
+     * Inflate central app bar
+     * @param menu The menu object for the activity
+     * @return Boolean defining whether or not app bar menu should be displayed
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_action_bar, menu);
+        return true;
     }
 
     /**

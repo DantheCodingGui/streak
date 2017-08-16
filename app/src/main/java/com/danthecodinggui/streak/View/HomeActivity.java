@@ -3,8 +3,6 @@ package com.danthecodinggui.streak.View;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static android.R.attr.data;
 import static com.danthecodinggui.streak.R.id.streak_card_view;
 
 /**
@@ -204,7 +201,9 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         @Override
         public void onBindViewHolder(StreakViewHolder holder, int pos) {
             StreakObject ob = streakList.get(pos);
+            //use presenter to get how long streak is and style coordingly
             holder.streakText.setText(ob.getStreakText());
+            holder.streakDuration.setText(getResources().getString(R.string.card_duration, ob.getStreakDuration()));
         }
 
         /** Needed for RecyclerViewAdapter implementation
@@ -259,10 +258,12 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 implements View.OnClickListener, View.OnLongClickListener, ItemTouchHelperViewHolder {
 
             TextView streakText;
+            TextView streakDuration;
 
             StreakViewHolder(View view) {
                 super(view);
-                streakText = (TextView)itemView.findViewById(R.id.streak_text);
+                streakText = (TextView)itemView.findViewById(R.id.txt_card_text);
+                streakDuration = (TextView)itemView.findViewById(R.id.txt_card_duration);
 
                 view.setOnClickListener(this);
                 view.setOnLongClickListener(this);

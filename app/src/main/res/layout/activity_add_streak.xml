@@ -7,24 +7,39 @@
     android:orientation="vertical"
     android:transitionName="@string/transition_edit_streak">
 
-    <EditText
-        android:id="@+id/editStreak"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tbar_edit_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:ems="10"
-        android:inputType="textMultiLine"
-        android:gravity="top"
-        android:layout_weight="0.1"
-        android:layout_margin="20dp"
-        android:background="@android:color/transparent"/>
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/EditStreakToolbarTheme"/>
 
-    <Button
-        android:id="@+id/button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Done"
-        android:layout_weight="0.9"
-        android:onClick="SubmitStreak"/>
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editStreak"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:layout_weight="1"
+            android:layout_margin="20dp"
+            android:background="@android:color/transparent"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Done"
+            android:layout_weight="9"
+            android:onClick="SubmitStreak"/>
+
+    </LinearLayout>
 
 
 </LinearLayout>

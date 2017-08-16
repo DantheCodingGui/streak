@@ -21,13 +21,22 @@
         android:layout_margin="3dp">
 
         <TextView
-            android:id="@+id/streak_text"
+            android:id="@+id/txt_card_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:padding="10dp"
             android:textColor="@android:color/black"
-            android:textSize="25sp"/>
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/txt_card_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="2dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
