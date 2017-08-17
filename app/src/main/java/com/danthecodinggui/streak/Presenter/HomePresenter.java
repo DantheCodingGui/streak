@@ -42,10 +42,6 @@ public class HomePresenter {
         model.DeleteStreak(streakToDelete);
     }
 
-    public void SwapStreaks(StreakObject firstStreak, int firstViewPos, StreakObject secondStreak, int secondViewPos) {
-        model.SwapStreaks(firstStreak, firstViewPos, secondStreak, secondViewPos);
-    }
-
     public void UpdateMovedList(List<StreakObject> streakListBeforeMove, List<StreakObject> streakList) {
         //check which objects have changed position
         //send new list of streakobjects with changed positions to database method, remove swap one and old implementation
@@ -81,5 +77,9 @@ public class HomePresenter {
 
     public void SaveListLayoutManager(Context context, boolean type) {
         model.SaveListViewType(context, type);
+    }
+
+    public void IncrementStreak(StreakObject streakObject) {
+        model.IncrementStreak(streakObject);
     }
 }

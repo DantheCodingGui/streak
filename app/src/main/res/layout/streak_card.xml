@@ -19,14 +19,30 @@
         android:orientation="vertical"
         android:transitionName="@string/transition_edit_streak">
 
-        <TextView
-            android:id="@+id/txt_card_text"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="10dp"
-            android:textColor="@android:color/black"
-            android:textSize="25sp" />
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/txt_card_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="25sp" />
+
+            <ImageButton
+                android:id="@+id/ibtn_increment_streak"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@android:color/holo_green_dark"
+                card_view:srcCompat="@drawable/add_icon" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/txt_card_duration"

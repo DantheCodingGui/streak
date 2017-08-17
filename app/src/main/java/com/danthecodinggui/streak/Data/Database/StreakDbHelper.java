@@ -1,4 +1,4 @@
-package com.danthecodinggui.streak.Data;
+package com.danthecodinggui.streak.Data.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.danthecodinggui.streak.Data.StreakObject;
 import com.danthecodinggui.streak.View.HomeActivity;
 
 import java.util.List;
@@ -259,5 +260,25 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return queriedEntry;
+    }
+
+    public void IncrementStreak(StreakObject streakObject) {
+        SQLiteDatabase db = instance.getWritableDatabase();
+
+        ContentValues values;
+
+        values = new ContentValues();
+
+        values.put(StreakContract.StreakTable.STREAK_DURATION, streakObject.getStreakDuration() + 1);
+
+        String selection = StreakContract.StreakTable._ID + " = ?";
+        String[] selectionArgs = { Long.toString(streakObject.getStreakId()) };
+
+        db.update(
+                StreakContract.StreakTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
     }
 }

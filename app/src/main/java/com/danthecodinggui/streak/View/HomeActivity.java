@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.danthecodinggui.streak.View.ItemTouchHelper.ItemTouchHelperAdapter;
@@ -230,14 +231,17 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
          */
         @Override
         public void onBindViewHolder(StreakViewHolder holder, int pos) {
-            StreakObject ob = streakList.get(pos);
-            //use presenter to get how long streak is and style coordingly
-            holder.streakText.setText(ob.getStreakText());
-            if (ob.getStreakDuration() == 0) {
+            holder.streakText.setText(streakList.get(pos).getStreakText());
+            SetStreakDuration(holder, pos);
+        }
+
+        private void SetStreakDuration(StreakViewHolder holder, int pos) {
+            int duration = streakList.get(pos).getStreakDuration();
+            if (duration == 0) {
                 holder.streakDuration.setText(getResources().getString(R.string.card_duration_init));
             }
             else {
-                holder.streakDuration.setText(getResources().getString(R.string.card_duration, ob.getStreakDuration()));
+                holder.streakDuration.setText(getResources().getString(R.string.card_duration, duration));
             }
         }
 
@@ -294,14 +298,28 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
 
             TextView streakText;
             TextView streakDuration;
+            ImageButton incrementStreak;
 
             StreakViewHolder(View view) {
                 super(view);
                 streakText = (TextView)itemView.findViewById(R.id.txt_card_text);
                 streakDuration = (TextView)itemView.findViewById(R.id.txt_card_duration);
+                incrementStreak = (ImageButton)itemView.findViewById(R.id.ibtn_increment_streak);
 
                 view.setOnClickListener(this);
                 view.setOnLongClickListener(this);
+
+                final StreakViewHolder temp = this;
+                incrementStreak.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = getAdapterPosition();
+                        presenter.IncrementStreak(streakList.get(pos));
+                        streakList.get(pos).incrementStreakDuration();
+                        SetStreakDuration(temp, pos);
+                        //also need to edit view
+                    }
+                });
             }
 
             /**

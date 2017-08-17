@@ -3,6 +3,7 @@ package com.danthecodinggui.streak.Data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.danthecodinggui.streak.Data.Database.StreakDbHelper;
 import com.danthecodinggui.streak.R;
 
 import java.util.List;
@@ -70,6 +71,11 @@ public class Model implements Modelable {
         sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         return sharedPref.getBoolean(context.getString(R.string.recyclerview_layout_manager), defaultValue);
+    }
+
+    @Override
+    public void IncrementStreak(StreakObject streakObject) {
+        database.IncrementStreak(streakObject);
     }
 
     @Override
