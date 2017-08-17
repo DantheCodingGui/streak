@@ -1,7 +1,9 @@
 package com.danthecodinggui.streak.Data;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.SharedPreferences;
+
+import com.danthecodinggui.streak.R;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Model implements Modelable {
     private static Model model;
 
     private StreakDbHelper database;
+    private SharedPreferences sharedPref;
 
     private Model(Context context) {
         this.database = StreakDbHelper.getInstance(context);
@@ -60,5 +63,21 @@ public class Model implements Modelable {
     public List<StreakObject> GetAllStreaks(List<StreakObject> entryList) {
         database.GetAllStreaks(entryList);
         return entryList;
+    }
+
+    @Override
+    public boolean GetListViewType(Context context, boolean defaultValue) {
+        sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(context.getString(R.string.recyclerview_layout_manager), defaultValue);
+    }
+
+    @Override
+    public void SaveListViewType(Context context, boolean type) {
+        sharedPref = context.getSharedPreferences(
+                context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(context.getString(R.string.recyclerview_layout_manager), type);
+        editor.apply();
     }
 }

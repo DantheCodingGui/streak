@@ -34,7 +34,7 @@
             android:clickable="true"
             android:onClick="AddStreak"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_add_white_24dp" />
+            app:srcCompat="@drawable/add_icon" />
 
     </android.support.design.widget.CoordinatorLayout>
 

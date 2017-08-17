@@ -1,5 +1,6 @@
 package com.danthecodinggui.streak.Presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -72,5 +73,13 @@ public class HomePresenter {
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation((HomeActivity)this.view, itemView, view.getStringResource(R.string.transition_edit_streak));
         ActivityCompat.startActivityForResult((HomeActivity)view, editStreak, HomeActivity.EDIT_STREAK, options.toBundle());
+    }
+
+    public boolean getListLayoutManager(Context context) {
+        return model.GetListViewType(context, HomeActivity.RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER);
+    }
+
+    public void SaveListLayoutManager(Context context, boolean type) {
+        model.SaveListViewType(context, type);
     }
 }

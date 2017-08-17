@@ -45,6 +45,10 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
     public static final int UPDATE_TEXT = 0;
     public static final int UPDATE_IS_PRIORITY = 1;
 
+    public static final boolean RECYCLERVIEW_LINEAR_LAYOUT_MANAGER = false;
+    public static final boolean RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER = true;
+    private boolean recyclerviewListType;
+
     //public static final String LIST_SIZE = "LIST_SIZE";
 
     private List<StreakObject> streakList;
@@ -70,8 +74,16 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
 
         streakRecycler = (RecyclerView)findViewById(R.id.home_container);
 
-        StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
-        streakRecycler.setLayoutManager(streakLayoutManager);
+        if (presenter.getListLayoutManager(this) == RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER) {
+            StaggeredGridLayoutManager streakLayoutManager = new StaggeredGridLayoutManager(2, 1);
+            streakRecycler.setLayoutManager(streakLayoutManager);
+            recyclerviewListType = RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER;
+        }
+        else {
+            LinearLayoutManager streakLayoutManager = new LinearLayoutManager(this);
+            streakRecycler.setLayoutManager(streakLayoutManager);
+            recyclerviewListType = RECYCLERVIEW_LINEAR_LAYOUT_MANAGER;
+        }
 
         rcAdapter = new StreakRecyclerViewAdapter(streakList);
         streakRecycler.setAdapter(rcAdapter);
@@ -92,6 +104,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_action_bar, menu);
+        if (recyclerviewListType == RECYCLERVIEW_LINEAR_LAYOUT_MANAGER)
+            menu.getItem(0).setIcon(R.drawable.staggered_grid_view_icon);;
         return true;
     }
 
@@ -109,12 +123,14 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 if (streakRecycler.getLayoutManager() instanceof StaggeredGridLayoutManager) {
                     streakRecycler.setLayoutManager(new LinearLayoutManager(this));
                     streakRecycler.setAdapter(rcAdapter);
-                    item.setIcon(R.drawable.ic_view_quilt_white_24dp);
+                    item.setIcon(R.drawable.staggered_grid_view_icon);
+                    presenter.SaveListLayoutManager(this, RECYCLERVIEW_LINEAR_LAYOUT_MANAGER);
                 }
                 else {
                     streakRecycler.setLayoutManager(new StaggeredGridLayoutManager(2, 1));
                     streakRecycler.setAdapter(rcAdapter);
-                    item.setIcon(R.drawable.ic_view_stream_white_24dp);
+                    item.setIcon(R.drawable.linear_view_icon);
+                    presenter.SaveListLayoutManager(this, RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER);
                 }
                 return true;
             case R.id.home_action_bar_overflow:

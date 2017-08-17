@@ -7,4 +7,6 @@
     <string name="card_duration">Streak at %1$d</string>
     <string name="card_duration_init">Streak not started yet</string>
     <string name="swap_view">Swap list view</string>
+    <string name="preference_file_key">com.danthecodinggui.streak.Data.PREFERENCE_FILE_KEY</string>
+    <string name="recyclerview_layout_manager">com.danthecodinggui.streak.View.RECYCLERVIEW_LAYOUT_MANAGER</string>
 </resources>
