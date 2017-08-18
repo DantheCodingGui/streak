@@ -11,10 +11,6 @@ public class StreakObject {
     private int streakDuration;
     private boolean isPriority;
 
-    /**
-     * Data model represented in RecyclerView
-     * @param streakText The streak description
-     */
     public StreakObject(String streakText, int streakDuration) {
         this.streakText = streakText;
         this.streakDuration = streakDuration;

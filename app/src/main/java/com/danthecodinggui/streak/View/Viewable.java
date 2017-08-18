@@ -3,9 +3,8 @@ package com.danthecodinggui.streak.View;
 import android.content.Context;
 
 /**
- * Created by Dan on 10/08/2017.
+ * Allows presenter to access view through an interface
  */
-
 public interface Viewable {
     Context getActivityContext();
     String getStringResource(int resource);

@@ -48,9 +48,6 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_STREAK_TABLE);
     }
 
-    /**
-     * Called when changes made to database structure, look into later
-     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + StreakContract.StreakTable.TABLE_NAME);
@@ -111,46 +108,8 @@ public class StreakDbHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Swaps the view index values of two database records
-     * @param firstStreak
-     * @param secondStreak
-     */
-    public void SwapListViewIndexes(StreakObject firstStreak, int firstViewPos, StreakObject secondStreak, int secondViewPos) {
-
-        SQLiteDatabase db = instance.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, secondViewPos);
-
-        String selection = StreakContract.StreakTable._ID + " = ?";
-        String[] selectionArgs = { Long.toString(firstStreak.getStreakId()) };
-
-        db.update(
-                StreakContract.StreakTable.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs
-        );
-
-        values = new ContentValues();
-
-        values.put(StreakContract.StreakTable.STREAK_VIEW_INDEX, firstViewPos);
-
-        selection = StreakContract.StreakTable._ID + " = ?";
-        selectionArgs = new String[]{ Long.toString(secondStreak.getStreakId()) };
-
-        db.update(
-                StreakContract.StreakTable.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs
-        );
-    }
-
-    /**
      * Deletes a streak entry from the database
-     * @param streakToDelete
+     * @param streakToDelete The streak object to delete
      */
     public void DeleteStreak(StreakObject streakToDelete) {
         SQLiteDatabase db = instance.getWritableDatabase();
@@ -163,9 +122,9 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     /**
      * Grabs all the existing streaks in the database
-     * @param recyclerViewItems
+     * @param streakList The list of streaks to occupy with database entries
      */
-    public void GetAllStreaks(List<StreakObject> recyclerViewItems) {
+    public void GetAllStreaks(List<StreakObject> streakList) {
         SQLiteDatabase db = instance.getReadableDatabase();
 
         String[] projection = {
@@ -192,14 +151,19 @@ public class StreakDbHelper extends SQLiteOpenHelper {
             long streakId = cursor.getLong(cursor.getColumnIndexOrThrow((StreakContract.StreakTable._ID)));
             String streakText = cursor.getString(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DESCRIPTION));
             int streakDuration = cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_DURATION));
-            boolean streakPriority = (cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_IS_PRIORITY)) != 0);
+            //boolean streakPriority = (cursor.getInt(cursor.getColumnIndexOrThrow(StreakContract.StreakTable.STREAK_IS_PRIORITY)) != 0);
             StreakObject ob = new StreakObject(streakText, streakDuration);
-            recyclerViewItems.add(ob);
+            streakList.add(ob);
             ob.setStreakId(streakId);
         }
         cursor.close();
     }
 
+    /**
+     * Updates the order of any moved streak cards in the view
+     * @param movedStreaks The list of all streaks that need their database entries updated
+     * @param streaksNewPositions The corresponding list of changed positions to update with
+     */
     public void UpdateEntriesOrder(List<StreakObject> movedStreaks, List<Integer> streaksNewPositions) {
         SQLiteDatabase db = instance.getWritableDatabase();
 
@@ -223,6 +187,11 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Get a specific streak object
+     * @param streakUniqueId The primary key of the streak to get
+     * @return The streak object requested for
+     */
     public StreakObject GetEntry(long streakUniqueId) {
         SQLiteDatabase db = instance.getReadableDatabase();
 
@@ -262,6 +231,10 @@ public class StreakDbHelper extends SQLiteOpenHelper {
         return queriedEntry;
     }
 
+    /**
+     * Increments saved streak duration into database then re-saves it
+     * @param streakObject The streak object to increment the duration of
+     */
     public void IncrementStreak(StreakObject streakObject) {
         SQLiteDatabase db = instance.getWritableDatabase();
 

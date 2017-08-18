@@ -5,7 +5,6 @@ import android.provider.BaseColumns;
 /**
  * Defines how data is laid out in database
  */
-
 final class StreakContract {
 
     private StreakContract() {}

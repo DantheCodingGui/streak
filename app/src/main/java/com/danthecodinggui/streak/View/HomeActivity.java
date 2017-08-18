@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.danthecodinggui.streak.R.id.streak_card_view;
-
 /**
  * The home screen containing all current streaks in card form, which can be displayed in a number
  * of ways
@@ -60,11 +58,6 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
     private RecyclerView streakRecycler;
     private StreakRecyclerViewAdapter rcAdapter;
 
-    /**
-     * Method called upon opening the application for the first time
-     * @param savedInstanceState Optional state information passed to the activity to restore it to
-     *                           a previous state when it was last used
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,24 +90,13 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         setSupportActionBar(appBar);
     }
 
-    /**
-     * Inflate central app bar
-     * @param menu The menu object for the activity
-     * @return Boolean defining whether or not app bar menu should be displayed
-     */
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home_action_bar, menu);
         if (recyclerviewListType == RECYCLERVIEW_LINEAR_LAYOUT_MANAGER)
-            menu.getItem(0).setIcon(R.drawable.staggered_grid_view_icon);;
+            menu.getItem(0).setIcon(R.drawable.staggered_grid_view_icon);
         return true;
     }
 
-    /**
-     * Handles app bar button presses
-     * @param item The button pressed in the app bar
-     * @return Boolean defining whether or not button press has been handled
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -141,6 +123,10 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Opens the edit streak activity to add a new streak
+     * @param view The floating action button clicked
+     */
     public void AddStreak(View view) {
         Intent newStreak = new Intent(this, EditStreakActivity.class);
         newStreak.putExtra("listSize", streakList.size());
@@ -185,11 +171,11 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         }
     }
 
+    //Interface methods so presenter can access activity based functionality
     @Override
     public Context getActivityContext() {
         return this;
     }
-
     @Override
     public String getStringResource(int resource) {
         return getString(resource);
@@ -202,19 +188,11 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             extends RecyclerView.Adapter<StreakRecyclerViewAdapter.StreakViewHolder>
             implements ItemTouchHelperAdapter {
 
-        /**
-         * @param streaks Initialise data if some already exists
-         */
+
         StreakRecyclerViewAdapter(List<StreakObject> streaks) {
             streakList = streaks;
         }
 
-        /**
-         * Inflates the view card Xml into the RecyclerView
-         * @param viewGroup The parent ViewGroup that the new view will be added to
-         * @param viewType Needed if there exists different behaviour depending on view type
-         * @return New ViewHolder with inflated view
-         */
         @Override
         public StreakViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
@@ -224,17 +202,17 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             return new StreakViewHolder(layoutView);
         }
 
-        /**
-         * Copy the streak object data to a ViewHolder
-         * @param holder The ViewHolder to copy the data to
-         * @param pos Specifies position of streak object in list
-         */
         @Override
         public void onBindViewHolder(StreakViewHolder holder, int pos) {
             holder.streakText.setText(streakList.get(pos).getStreakText());
             SetStreakDuration(holder, pos);
         }
 
+        /**
+         * Sets duration of streak Card text, function as code called twice
+         * @param holder The ViewHolder containing the streak to change
+         * @param pos The position of the ViewHolder in the RecyclerView
+         */
         private void SetStreakDuration(StreakViewHolder holder, int pos) {
             int duration = streakList.get(pos).getStreakDuration();
             if (duration == 0) {
@@ -245,10 +223,6 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             }
         }
 
-        /** Needed for RecyclerViewAdapter implementation
-         * returns size of data model
-         * @return Size of list to be displayed in RecyclerView
-         */
         @Override
         public int getItemCount() {
             return streakList.size();
@@ -269,8 +243,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
         /**
          * Handles swapping streak views, updating streak object view attributes and updates database
          * entries
-         * @param fromPosition
-         * @param toPosition
+         * @param fromPosition Original Position
+         * @param toPosition New Position
          * @return Has the movement been handled
          */
         @Override
@@ -324,45 +298,41 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 });
             }
 
-            /**
-             * Opens edit streak activity
-             * @param view
-             */
-            @Override
             public void onClick(View view) {
                 int pos = getAdapterPosition();
                 presenter.EditStreak(view, streakList.get(pos), pos);
             }
 
-            /**
-             * Switches app bar to other version with options such as delete etc.
-             * @param view
-             * @return Has long click been handled
-             */
             @Override
             public boolean onLongClick(View view) {
                 return true;
             }
 
-            /**
-             * Changes appearance of view when start drag and drop movement
-             */
             @Override
             public void onItemSelected(int actionState) {
-                //CHANGE APPEARANCE OF PICKED UP CARDS HERE
+                //change appearance of card based on movement type
                 if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                    CardView card = (CardView) itemView.findViewById(streak_card_view);
-                    card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_drag_border));
-                    itemView.findViewById(R.id.card_content_container).setBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_drag_background));
+                    CardView card = (CardView) itemView.findViewById(R.id.streak_card_view);
+                    card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(),
+                            R.color.card_drag_border));
+                    itemView.findViewById(
+                            R.id.card_content_container).setBackgroundColor(
+                                    ContextCompat.getColor(getActivityContext()
+                                            , R.color.card_drag_background));
                     itemView.setRotation(5);
 
+                    //take snapshot of streaks list, used to compare to changed list later, to tell
+                    // which streak objects have changed position
                     tempActionState = ItemTouchHelper.ACTION_STATE_DRAG;
                     streakListBeforeMove = new ArrayList<>(streakList);
                 }
                 else if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                    CardView card = (CardView) itemView.findViewById(streak_card_view);
-                    card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_swipe_border));
-                    itemView.findViewById(R.id.card_content_container).setBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_swipe_background));
+                    CardView card = (CardView) itemView.findViewById(R.id.streak_card_view);
+                    card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext()
+                            , R.color.card_swipe_border));
+                    itemView.findViewById(R.id.card_content_container).setBackgroundColor(
+                            ContextCompat.getColor(getActivityContext()
+                                    , R.color.card_swipe_background));
                     tempActionState = ItemTouchHelper.ACTION_STATE_SWIPE;
                 }
             }
@@ -372,11 +342,14 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
              */
             @Override
             public void onItemClear() {
-                CardView card = (CardView)itemView.findViewById(streak_card_view);
+                //reset card appearance
+                CardView card = (CardView)itemView.findViewById(R.id.streak_card_view);
                 card.setCardBackgroundColor(Color.WHITE);
-                itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.TRANSPARENT);
+                itemView.findViewById(R.id.card_content_container)
+                        .setBackgroundColor(Color.TRANSPARENT);
                 itemView.setRotation(0);
 
+                //only update database view values when item dropped
                 if (tempActionState == ItemTouchHelper.ACTION_STATE_DRAG) {
                     presenter.UpdateMovedList(streakListBeforeMove, streakList);
                     streakListBeforeMove.clear();

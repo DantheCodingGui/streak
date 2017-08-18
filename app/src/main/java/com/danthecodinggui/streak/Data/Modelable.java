@@ -4,10 +4,8 @@ import android.content.Context;
 
 import java.util.List;
 
-import static android.R.attr.type;
-
 /**
- * Created by Dan on 10/08/2017.
+ * Allows presenters in MVP to code to this interface
  */
 
 public interface Modelable {
@@ -15,7 +13,6 @@ public interface Modelable {
     void DeleteStreak(StreakObject entryToDelete);
     List<StreakObject> GetAllStreaks(List<StreakObject> entryList);
     void UpdateStreak(StreakObject streakObject, int whatToUpdate);
-    void SwapStreaks(StreakObject firstStreak, int firstViewPos, StreakObject secondStreak, int secondViewPos);
     void UpdateStreaksOrder(List<StreakObject> movedStreaks, List<Integer> movedStreaksViewPositions);
     StreakObject GetStreak(long streakUniqueId);
     void SaveListViewType(Context context, boolean type);

@@ -9,9 +9,8 @@ import com.danthecodinggui.streak.R;
 import java.util.List;
 
 /**
- * Created by Dan on 10/08/2017.
+ * Holds all data for the Application, also a singleton so can be shared across whole app
  */
-
 public class Model implements Modelable {
 
     private static Model model;
@@ -28,6 +27,11 @@ public class Model implements Modelable {
         database.UpdateStreakValues(streakObject, whatToUpdate);
     }
 
+    /**
+     * Get singleton instance of Model object
+     * @param context The application context needed to create the model
+     * @return A model object, either a new instance or the existing one
+     */
     public static synchronized Model getInstance(Context context) {
         if (model == null) {
             model = new Model(context);
@@ -43,11 +47,6 @@ public class Model implements Modelable {
     @Override
     public void DeleteStreak(StreakObject entryToDelete) {
         database.DeleteStreak(entryToDelete);
-    }
-
-    @Override
-    public void SwapStreaks(StreakObject firstStreak, int firstViewPos, StreakObject secondStreak, int secondViewPos) {
-        database.SwapListViewIndexes(firstStreak, firstViewPos, secondStreak, secondViewPos);
     }
 
     @Override

@@ -14,8 +14,6 @@ import com.danthecodinggui.streak.Data.StreakObject;
 import com.danthecodinggui.streak.Presenter.EditPresenter;
 import com.danthecodinggui.streak.R;
 
-import static com.danthecodinggui.streak.R.id.editStreak;
-
 /**
  * Screen shown whenever activity added or existing streak clicked by user
  */
@@ -49,8 +47,10 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
 
         Toolbar editBar = (Toolbar)findViewById(R.id.tbar_edit_bar);
         setSupportActionBar(editBar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         Intent intent = getIntent();
         function = intent.getIntExtra("function", ADD_STREAK);
@@ -71,20 +71,14 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
 
                 streakText = initialStreak.getStreakText();
 
-                EditText text = (EditText)findViewById(editStreak);
+                EditText text = (EditText)findViewById(R.id.editStreak);
                 text.append(streakText);
                 break;
             default:
                 Log.d("Error", "Invalid intent to EditStreakActivity");
-                return;
         }
     }
 
-    /**
-     * Inflate central app bar
-     * @param menu The menu object for the activity
-     * @return Boolean defining whether or not app bar menu should be displayed
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.edit_action_bar, menu);
@@ -97,7 +91,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
      */
     public void SubmitStreak(View view) {
 
-        EditText text = (EditText)findViewById(editStreak);
+        EditText text = (EditText)findViewById(R.id.editStreak);
         streakText = text.getText().toString();
 
         StreakObject streakToSubmit = new StreakObject(streakText, streakDuration);
@@ -140,11 +134,11 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
         finish();
     }
 
+    //Interface methods so presenter can access activity based functionality
     @Override
     public Context getActivityContext() {
         return this;
     }
-
     @Override
     public String getStringResource(int resource) {
         return getString(resource);

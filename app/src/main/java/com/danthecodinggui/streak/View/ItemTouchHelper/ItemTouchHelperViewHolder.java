@@ -1,7 +1,7 @@
 package com.danthecodinggui.streak.View.ItemTouchHelper;
 
 /**
- * Implemented by StreakViewHolder to change appearance of CardView when in motion
+ * Implemented by StreakViewHolder to allow appearance changes of CardView when in motion
  */
 public interface ItemTouchHelperViewHolder {
     void onItemSelected(int actionState);
