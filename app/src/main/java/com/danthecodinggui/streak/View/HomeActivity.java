@@ -300,6 +300,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             TextView streakDuration;
             ImageButton incrementStreak;
 
+            int tempActionState;
+
             StreakViewHolder(View view) {
                 super(view);
                 streakText = (TextView)itemView.findViewById(R.id.txt_card_text);
@@ -353,14 +355,16 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                     card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_drag_border));
                     itemView.findViewById(R.id.card_content_container).setBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_drag_background));
                     itemView.setRotation(5);
+
+                    tempActionState = ItemTouchHelper.ACTION_STATE_DRAG;
+                    streakListBeforeMove = new ArrayList<>(streakList);
                 }
                 else if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     CardView card = (CardView) itemView.findViewById(streak_card_view);
                     card.setCardBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_swipe_border));
                     itemView.findViewById(R.id.card_content_container).setBackgroundColor(ContextCompat.getColor(getActivityContext(), R.color.card_swipe_background));
+                    tempActionState = ItemTouchHelper.ACTION_STATE_SWIPE;
                 }
-
-                streakListBeforeMove = new ArrayList<>(streakList);
             }
 
             /**
@@ -373,8 +377,11 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 itemView.findViewById(R.id.card_content_container).setBackgroundColor(Color.TRANSPARENT);
                 itemView.setRotation(0);
 
-                presenter.UpdateMovedList(streakListBeforeMove, streakList);
-                streakListBeforeMove.clear();
+                if (tempActionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    presenter.UpdateMovedList(streakListBeforeMove, streakList);
+                    streakListBeforeMove.clear();
+                }
+                tempActionState = 0;
             }
         }
     }
