@@ -19,6 +19,7 @@ import java.util.List;
 public class StreakDbHelper extends SQLiteOpenHelper {
 
     private static StreakDbHelper instance;
+    private SQLiteDatabase db;
 
     private static final String DATABASE_NAME = "streak.db";
 
@@ -50,6 +51,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        //NEEDS CHANGING IF ANY DATABASE CHANGES OCCUR
         db.execSQL("DROP TABLE IF EXISTS " + StreakContract.StreakTable.TABLE_NAME);
         onCreate(db);
     }
@@ -61,7 +63,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      */
     public long AddStreak(StreakObject newStreak, int viewPos) {
 
-        SQLiteDatabase db = instance.getWritableDatabase();
+        db = instance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(StreakContract.StreakTable.STREAK_DESCRIPTION, newStreak.getStreakText());
@@ -79,7 +81,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      */
     public void UpdateStreakValues(StreakObject editedStreak, int whatToUpdate) {
 
-        SQLiteDatabase db = instance.getWritableDatabase();
+        db = instance.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
@@ -112,7 +114,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param streakToDelete The streak object to delete
      */
     public void DeleteStreak(StreakObject streakToDelete) {
-        SQLiteDatabase db = instance.getWritableDatabase();
+        db = instance.getWritableDatabase();
 
         String selection = StreakContract.StreakTable._ID + " = ?";
         String[] selectionArgs = {Long.toString(streakToDelete.getStreakId())};
@@ -125,7 +127,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param streakList The list of streaks to occupy with database entries
      */
     public void GetAllStreaks(List<StreakObject> streakList) {
-        SQLiteDatabase db = instance.getReadableDatabase();
+        db = instance.getReadableDatabase();
 
         String[] projection = {
                 StreakContract.StreakTable._ID,
@@ -165,7 +167,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param streaksNewPositions The corresponding list of changed positions to update with
      */
     public void UpdateEntriesOrder(List<StreakObject> movedStreaks, List<Integer> streaksNewPositions) {
-        SQLiteDatabase db = instance.getWritableDatabase();
+        db = instance.getWritableDatabase();
 
         ContentValues values;
 
@@ -193,7 +195,7 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @return The streak object requested for
      */
     public StreakObject GetEntry(long streakUniqueId) {
-        SQLiteDatabase db = instance.getReadableDatabase();
+        db = instance.getReadableDatabase();
 
         String[] projection = {
                 StreakContract.StreakTable._ID,
@@ -236,13 +238,33 @@ public class StreakDbHelper extends SQLiteOpenHelper {
      * @param streakObject The streak object to increment the duration of
      */
     public void IncrementStreak(StreakObject streakObject) {
-        SQLiteDatabase db = instance.getWritableDatabase();
+        db = instance.getWritableDatabase();
 
         ContentValues values;
 
         values = new ContentValues();
 
         values.put(StreakContract.StreakTable.STREAK_DURATION, streakObject.getStreakDuration() + 1);
+
+        String selection = StreakContract.StreakTable._ID + " = ?";
+        String[] selectionArgs = { Long.toString(streakObject.getStreakId()) };
+
+        db.update(
+                StreakContract.StreakTable.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
+    }
+
+    public void ResetStreak(StreakObject streakObject) {
+        db = instance.getWritableDatabase();
+
+        ContentValues values;
+
+        values = new ContentValues();
+
+        values.put(StreakContract.StreakTable.STREAK_DURATION, 0);
 
         String selection = StreakContract.StreakTable._ID + " = ?";
         String[] selectionArgs = { Long.toString(streakObject.getStreakId()) };

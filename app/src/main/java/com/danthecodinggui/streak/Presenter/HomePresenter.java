@@ -112,4 +112,12 @@ public class HomePresenter {
     public void IncrementStreak(StreakObject streakObject) {
         model.IncrementStreak(streakObject);
     }
+
+    /**
+     * Breaks the streak, resetting the duration value to 0
+     * @param streakObject
+     */
+    public void BreakStreak(StreakObject streakObject) {
+        model.BreakStreak(streakObject);
+    }
 }

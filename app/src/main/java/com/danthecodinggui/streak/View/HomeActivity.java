@@ -273,6 +273,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             TextView streakText;
             TextView streakDuration;
             ImageButton incrementStreak;
+            ImageButton breakStreak;
 
             int tempActionState;
 
@@ -281,6 +282,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                 streakText = (TextView)itemView.findViewById(R.id.txt_card_text);
                 streakDuration = (TextView)itemView.findViewById(R.id.txt_card_duration);
                 incrementStreak = (ImageButton)itemView.findViewById(R.id.ibtn_increment_streak);
+                breakStreak = (ImageButton)itemView.findViewById(R.id.ibtn_break_streak);
 
                 view.setOnClickListener(this);
                 view.setOnLongClickListener(this);
@@ -294,6 +296,15 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                         streakList.get(pos).incrementStreakDuration();
                         SetStreakDuration(temp, pos);
                         //also need to edit view
+                    }
+                });
+                breakStreak.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = getAdapterPosition();
+                        presenter.BreakStreak(streakList.get(pos));
+                        streakList.get(pos).resetStreakDuration();
+                        SetStreakDuration(temp, pos);
                     }
                 });
             }

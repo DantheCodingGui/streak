@@ -16,6 +16,7 @@
         android:id="@+id/card_content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="100dp"
         android:orientation="vertical"
         android:transitionName="@string/transition_edit_streak">
 
@@ -35,13 +36,29 @@
                 android:textColor="@android:color/black"
                 android:textSize="25sp" />
 
-            <ImageButton
-                android:id="@+id/ibtn_increment_streak"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:background="@android:color/holo_green_dark"
-                card_view:srcCompat="@drawable/add_icon" />
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/ibtn_increment_streak"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@android:color/holo_green_dark"
+                    card_view:srcCompat="@drawable/add_icon" />
+
+                <ImageButton
+                    android:id="@+id/ibtn_break_streak"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:background="@android:color/holo_red_dark"
+                    card_view:srcCompat="@drawable/break_streak" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView

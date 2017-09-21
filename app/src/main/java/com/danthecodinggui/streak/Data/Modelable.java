@@ -18,4 +18,5 @@ public interface Modelable {
     void SaveListViewType(Context context, boolean type);
     boolean GetListViewType(Context context, boolean defaultValue);
     void IncrementStreak(StreakObject streakObject);
+    void BreakStreak(StreakObject streakObject);
 }

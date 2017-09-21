@@ -52,6 +52,9 @@ public class StreakObject {
     public void incrementStreakDuration() {
         ++streakDuration;
     }
+    public void resetStreakDuration() {
+        streakDuration = 0;
+    }
 
 
     public boolean getStreakIsPriority() {

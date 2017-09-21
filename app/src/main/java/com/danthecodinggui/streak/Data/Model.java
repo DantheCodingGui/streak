@@ -78,6 +78,11 @@ public class Model implements Modelable {
     }
 
     @Override
+    public void BreakStreak(StreakObject streakObject) {
+        database.ResetStreak(streakObject);
+    }
+
+    @Override
     public void SaveListViewType(Context context, boolean type) {
         sharedPref = context.getSharedPreferences(
                 context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
