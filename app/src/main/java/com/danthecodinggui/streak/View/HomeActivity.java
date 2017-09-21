@@ -3,6 +3,7 @@ package com.danthecodinggui.streak.View;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ import com.danthecodinggui.streak.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static android.support.design.widget.Snackbar.make;
 
 /**
  * The home screen containing all current streaks in card form, which can be displayed in a number
@@ -234,10 +237,29 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
          */
         @Override
         public void onItemDismiss(int position) {
-            StreakObject streakToDelete = streakList.remove(position);
+            final StreakObject streakToDelete = streakList.remove(position);
             notifyItemRemoved(position);
 
-            presenter.DeleteStreak(streakToDelete);
+            final ViewGroup viewGroup = (ViewGroup) ((ViewGroup)findViewById(android.R.id.content)).getChildAt(0);
+            viewGroup.setTag(position);
+
+            Snackbar.make(viewGroup, R.string.streak_removed, Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            int position = (int)viewGroup.getTag();
+                            streakList.add(position, streakToDelete);
+                            notifyItemInserted(position);
+                        }
+                    })
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            presenter.DeleteStreak(streakToDelete);
+                        }
+                    })
+                    .setActionTextColor(Color.RED)
+                    .show();
         }
 
         /**
