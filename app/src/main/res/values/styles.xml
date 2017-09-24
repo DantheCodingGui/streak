@@ -25,9 +25,8 @@
     </style>
 
     <style name = "HomeToolbarTheme" parent="HomeTheme">
-        <item name="android:textColorPrimary">@android:color/primary_text_dark</item>
-        <item name="android:textColorSecondary">@android:color/primary_text_dark</item>
-        <item name="colorAccent">@color/colorAccentHome</item>
+        <item name="android:textColorPrimary">@color/text_white</item>
+        <item name="android:textColorSecondary">@color/text_white</item>
     </style>
 
     <style name = "EditStreakToolbarTheme" parent="EditStreakTheme">
