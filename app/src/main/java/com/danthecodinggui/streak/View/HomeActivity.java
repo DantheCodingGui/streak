@@ -244,7 +244,7 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup)findViewById(android.R.id.content)).getChildAt(0);
             viewGroup.setTag(position);
 
-            Snackbar.make(viewGroup, R.string.streak_removed, Snackbar.LENGTH_LONG)
+            Snackbar.make(findViewById(R.id.coly_home_content), R.string.streak_removed, Snackbar.LENGTH_LONG)
                     .setAction("UNDO", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -256,7 +256,9 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                     .addCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar snackbar, int event) {
-                            presenter.DeleteStreak(streakToDelete);
+                            if (event != DISMISS_EVENT_ACTION) {
+                                presenter.DeleteStreak(streakToDelete);
+                            }
                         }
                     })
                     .setActionTextColor(Color.RED)
