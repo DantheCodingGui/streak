@@ -1,10 +1,12 @@
 package com.danthecodinggui.streak.View;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -33,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static android.support.design.widget.Snackbar.make;
 
 /**
  * The home screen containing all current streaks in card form, which can be displayed in a number
@@ -317,16 +318,34 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
                         presenter.IncrementStreak(streakList.get(pos));
                         streakList.get(pos).incrementStreakDuration();
                         SetStreakDuration(temp, pos);
-                        //also need to edit view
                     }
                 });
                 breakStreak.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int pos = getAdapterPosition();
-                        presenter.BreakStreak(streakList.get(pos));
-                        streakList.get(pos).resetStreakDuration();
-                        SetStreakDuration(temp, pos);
+                        final int pos = getAdapterPosition();
+
+                        if (streakList.get(pos).getStreakDuration() == 0){
+                            return;
+                        }
+
+                        AlertDialog.Builder verify = new AlertDialog.Builder(getActivityContext());
+                        verify.setTitle(R.string.verify_streak_break_title);
+                        verify.setMessage(R.string.verify_streak_break_message);
+                        verify.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        verify.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                presenter.BreakStreak(streakList.get(pos));
+                                streakList.get(pos).resetStreakDuration();
+                                SetStreakDuration(temp, pos);
+                            }
+                        });
+                        verify.create().show();
                     }
                 });
             }
