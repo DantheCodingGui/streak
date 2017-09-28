@@ -4,15 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 import com.danthecodinggui.streak.Data.StreakObject;
 import com.danthecodinggui.streak.Presenter.EditPresenter;
 import com.danthecodinggui.streak.R;
+
+import static com.danthecodinggui.streak.View.HomeActivity.RECYCLERVIEW_LINEAR_LAYOUT_MANAGER;
+import static com.danthecodinggui.streak.View.HomeActivity.RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER;
 
 /**
  * Screen shown whenever activity added or existing streak clicked by user
@@ -85,11 +91,23 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.btn_confirm_streak:
+                SubmitStreak();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Saves new/edited streak to database
-     * @param view Button view Pressed
      */
-    public void SubmitStreak(View view) {
+    public void SubmitStreak() {
 
         EditText text = (EditText)findViewById(R.id.editStreak);
         streakText = text.getText().toString();
