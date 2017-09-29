@@ -15,4 +15,7 @@
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="confirm_streak">Confirm Streak</string>
+    <string name="enable_reminder">Reminder</string>
+    <string name="tag_streak_text">Description</string>
+    <string name="tag_streak_checkin">Check In</string>
 </resources>

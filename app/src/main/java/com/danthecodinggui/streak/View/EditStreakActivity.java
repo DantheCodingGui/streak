@@ -1,31 +1,38 @@
 package com.danthecodinggui.streak.View;
 
+import android.app.FragmentTransaction;
+import android.app.TimePickerDialog;
+import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.danthecodinggui.streak.Data.StreakObject;
 import com.danthecodinggui.streak.Presenter.EditPresenter;
 import com.danthecodinggui.streak.R;
 
-import static com.danthecodinggui.streak.View.HomeActivity.RECYCLERVIEW_LINEAR_LAYOUT_MANAGER;
-import static com.danthecodinggui.streak.View.HomeActivity.RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER;
-
 /**
  * Screen shown whenever activity added or existing streak clicked by user
  */
-public class EditStreakActivity extends AppCompatActivity implements Viewable {
+public class EditStreakActivity extends AppCompatActivity implements Viewable
+        , TimePickerDialog.OnTimeSetListener {
 
     private EditPresenter presenter;
+
+    private EditText streakTextBox;
+    private TextView checkInTime;
+
+    private int checkInHour;
+    private int checkInMinute;
 
     private String streakText;
     private int streakDuration;
@@ -61,11 +68,25 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
         Intent intent = getIntent();
         function = intent.getIntExtra("function", ADD_STREAK);
 
+        streakTextBox = (EditText)findViewById(R.id.etxt_streak_description);
+        checkInTime = (TextView)findViewById(R.id.txt_select_checkin);
+        checkInTime.setText("18:00");
+        checkInHour = 18;
+        checkInMinute = 0;
+
         switch(function) {
             case (ADD_STREAK):
 
                 streakDuration = 0;
                 streakViewId = getIntent().getIntExtra("listSize", -1);
+
+                 checkInTime.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         TimePickerDialog d = new TimePickerDialog(getActivityContext(), EditStreakActivity.this, 0, 0, true);
+                         d.show();
+                     }
+                 });
 
                 break;
             case (EDIT_STREAK):
@@ -77,8 +98,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
 
                 streakText = initialStreak.getStreakText();
 
-                EditText text = (EditText)findViewById(R.id.editStreak);
-                text.append(streakText);
+                streakTextBox.append(streakText);
                 break;
             default:
                 Log.d("Error", "Invalid intent to EditStreakActivity");
@@ -109,8 +129,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
      */
     public void SubmitStreak() {
 
-        EditText text = (EditText)findViewById(R.id.editStreak);
-        streakText = text.getText().toString();
+        streakText = streakTextBox.getText().toString();
 
         StreakObject streakToSubmit = new StreakObject(streakText, streakDuration);
 
@@ -160,5 +179,12 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable {
     @Override
     public String getStringResource(int resource) {
         return getString(resource);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        checkInTime.setText(hourOfDay + ":" + minute);
+        checkInHour = hourOfDay;
+        checkInMinute = minute;
     }
 }
