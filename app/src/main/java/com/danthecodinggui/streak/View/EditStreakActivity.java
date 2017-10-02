@@ -1,8 +1,6 @@
 package com.danthecodinggui.streak.View;
 
-import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
-import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +27,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable
     private EditPresenter presenter;
 
     private EditText streakTextBox;
+    private TextView scheduleTime;
     private TextView checkInTime;
 
     private int checkInHour;
@@ -69,24 +68,31 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable
         function = intent.getIntExtra("function", ADD_STREAK);
 
         streakTextBox = (EditText)findViewById(R.id.etxt_streak_description);
+        scheduleTime = (TextView)findViewById(R.id.txt_streak_schedule);
         checkInTime = (TextView)findViewById(R.id.txt_select_checkin);
         checkInTime.setText("18:00");
         checkInHour = 18;
         checkInMinute = 0;
+
+        checkInTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog d = new TimePickerDialog(getActivityContext(), EditStreakActivity.this, 0, 0, true);
+                d.show();
+            }
+        });
+        scheduleTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         switch(function) {
             case (ADD_STREAK):
 
                 streakDuration = 0;
                 streakViewId = getIntent().getIntExtra("listSize", -1);
-
-                 checkInTime.setOnClickListener(new View.OnClickListener() {
-                     @Override
-                     public void onClick(View v) {
-                         TimePickerDialog d = new TimePickerDialog(getActivityContext(), EditStreakActivity.this, 0, 0, true);
-                         d.show();
-                     }
-                 });
 
                 break;
             case (EDIT_STREAK):

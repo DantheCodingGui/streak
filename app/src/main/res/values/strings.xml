@@ -18,4 +18,5 @@
     <string name="enable_reminder">Reminder</string>
     <string name="tag_streak_text">Description</string>
     <string name="tag_streak_checkin">Check In</string>
+    <string name="streak_schedule">Schedule</string>
 </resources>
