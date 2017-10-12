@@ -189,7 +189,7 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        checkInTime.setText(hourOfDay + ":" + minute);
+        checkInTime.setText(hourOfDay + ":" + ((minute < 10) ? ("0" + minute) : (minute)));
         checkInHour = hourOfDay;
         checkInMinute = minute;
     }
