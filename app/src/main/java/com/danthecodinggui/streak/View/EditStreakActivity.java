@@ -3,9 +3,13 @@ package com.danthecodinggui.streak.View;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +18,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.codetroopers.betterpickers.recurrencepicker.EventRecurrence;
+import com.codetroopers.betterpickers.recurrencepicker.EventRecurrenceFormatter;
+import com.codetroopers.betterpickers.recurrencepicker.RecurrencePickerDialogFragment;
 import com.danthecodinggui.streak.Data.StreakObject;
 import com.danthecodinggui.streak.Presenter.EditPresenter;
 import com.danthecodinggui.streak.R;
@@ -22,7 +29,7 @@ import com.danthecodinggui.streak.R;
  * Screen shown whenever activity added or existing streak clicked by user
  */
 public class EditStreakActivity extends AppCompatActivity implements Viewable
-        , TimePickerDialog.OnTimeSetListener {
+        , TimePickerDialog.OnTimeSetListener, RecurrencePickerDialogFragment.OnRecurrenceSetListener {
 
     private EditPresenter presenter;
 
@@ -45,6 +52,10 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable
 
     public static final int ADD_STREAK = 0;
     public static final int EDIT_STREAK = 1;
+
+    private static final String FRAG_TAG_RECUR_PICKER = "recurrencePickerDialogFragment";
+    private String mRrule;
+    private EventRecurrence mEventRecurrence = new EventRecurrence();
 
     //streak object as it exists entering this activity, used later on to check for changes upon
     //activity exit
@@ -70,21 +81,40 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable
         streakTextBox = (EditText)findViewById(R.id.etxt_streak_description);
         scheduleTime = (TextView)findViewById(R.id.txt_streak_schedule);
         checkInTime = (TextView)findViewById(R.id.txt_select_checkin);
-        checkInTime.setText("18:00");
+        scheduleTime.setText(R.string.default_schedule);
         checkInHour = 18;
         checkInMinute = 0;
+        checkInTime.setText(checkInHour + ":" + ((checkInMinute < 10) ? ("0" + checkInMinute) : (checkInMinute)));
 
         checkInTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog d = new TimePickerDialog(getActivityContext(), EditStreakActivity.this, 0, 0, true);
+                TimePickerDialog d = new TimePickerDialog(getActivityContext(), EditStreakActivity.this, checkInHour, checkInMinute, true);
                 d.show();
             }
         });
         scheduleTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentManager fm = getSupportFragmentManager();
+                Bundle bundle = new Bundle();
+                Time time = new Time();
+                time.setToNow();
+                bundle.putLong(RecurrencePickerDialogFragment.BUNDLE_START_TIME_MILLIS, time.toMillis(false));
+                bundle.putString(RecurrencePickerDialogFragment.BUNDLE_TIME_ZONE, time.timezone);
 
+                // may be more efficient to serialize and pass in EventRecurrence
+                bundle.putString(RecurrencePickerDialogFragment.BUNDLE_RRULE, mRrule);
+
+                RecurrencePickerDialogFragment rpd = (RecurrencePickerDialogFragment) fm.findFragmentByTag(
+                        FRAG_TAG_RECUR_PICKER);
+                if (rpd != null) {
+                    rpd.dismiss();
+                }
+                rpd = new RecurrencePickerDialogFragment();
+                rpd.setArguments(bundle);
+                rpd.setOnRecurrenceSetListener(EditStreakActivity.this);
+                rpd.show(fm, FRAG_TAG_RECUR_PICKER);
             }
         });
 
@@ -192,5 +222,25 @@ public class EditStreakActivity extends AppCompatActivity implements Viewable
         checkInTime.setText(hourOfDay + ":" + ((minute < 10) ? ("0" + minute) : (minute)));
         checkInHour = hourOfDay;
         checkInMinute = minute;
+    }
+
+    @Override
+    public void onRecurrenceSet(String rrule) {
+        mRrule = rrule;
+        if (mRrule != null) {
+            mEventRecurrence.parse(mRrule);
+        }
+        populateRepeats();
+    }
+
+    private void populateRepeats() {
+        Resources r = getResources();
+        String repeatString = "";
+        boolean enabled;
+        if (!TextUtils.isEmpty(mRrule)) {
+            repeatString = EventRecurrenceFormatter.getRepeatString(this, r, mEventRecurrence, true);
+        }
+
+        scheduleTime.setText(mRrule + "\n" + repeatString);
     }
 }

@@ -19,4 +19,5 @@
     <string name="tag_streak_text">Description</string>
     <string name="tag_streak_checkin">Check In</string>
     <string name="streak_schedule">Schedule</string>
+    <string name="default_schedule">No Schedule</string>
 </resources>

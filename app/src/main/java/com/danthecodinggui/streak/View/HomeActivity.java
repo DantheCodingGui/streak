@@ -62,6 +62,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
     private RecyclerView streakRecycler;
     private StreakRecyclerViewAdapter rcAdapter;
 
+    private Boolean isSameInstance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
 
         Toolbar appBar = (Toolbar)findViewById(R.id.tbar_app_bar);
         setSupportActionBar(appBar);
+
+        isSameInstance = false;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -132,6 +136,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
      * @param view The floating action button clicked
      */
     public void AddStreak(View view) {
+        isSameInstance = true;
+
         Intent newStreak = new Intent(this, EditStreakActivity.class);
         newStreak.putExtra("listSize", streakList.size());
         newStreak.putExtra("function", EditStreakActivity.ADD_STREAK);
@@ -140,6 +146,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!isSameInstance)
+            return;
         String streakText;
         switch(requestCode) {
             case ADD_STREAK:
@@ -353,6 +361,8 @@ public class HomeActivity extends AppCompatActivity implements Viewable {
             }
 
             public void onClick(View view) {
+                isSameInstance = true;
+
                 int pos = getAdapterPosition();
                 presenter.EditStreak(view, streakList.get(pos), pos);
             }
