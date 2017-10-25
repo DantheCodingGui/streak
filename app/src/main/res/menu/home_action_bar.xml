@@ -6,7 +6,7 @@
         android:id="@+id/btn_swap_view"
         android:title="@string/swap_view"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/linear_view_icon"/>
+        android:icon="@drawable/staggered_grid_view_icon"/>
 
     <item
         android:id="@+id/home_action_bar_overflow"

@@ -93,7 +93,7 @@ public class HomePresenter {
      * @return A boolean value determining if the layout manager is a list or grid format
      */
     public boolean getListLayoutManager(Context context) {
-        return model.GetListViewType(context, HomeActivity.RECYCLERVIEW_STAGGERED_GRID_LAYOUT_MANAGER);
+        return model.GetListViewType(context, HomeActivity.RECYCLERVIEW_LINEAR_LAYOUT_MANAGER);
     }
 
     /**
