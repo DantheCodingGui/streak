@@ -18,6 +18,12 @@
     <string name="enable_reminder">Reminder</string>
     <string name="tag_streak_text">Description</string>
     <string name="tag_streak_checkin">Check In</string>
-    <string name="streak_schedule">Schedule</string>
-    <string name="default_schedule">No Schedule</string>
+    <string name="txt_streak_schedule_tag">Schedule</string>
+    <string name="txt_streak_schedule_repeats_tag">Repetitions</string>
+    <string name="txt_streak_schedule_time_tag">Time</string>
+    <string name="txt_default_schedule_time">Enter Time</string>
+    <string name="txt_default_schedule_repeat">Enter Schedule</string>
+    <string name="txt_check_in_single">%d hour after event</string>
+    <string name="txt_check_in_multiple">%d hours after event</string>
+    <string name="dialog_msg_check_in">Choose how many hours after an activity you want a notification verifying you completed the task</string>
 </resources>
